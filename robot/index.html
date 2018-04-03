@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Robotito</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../libs/three.js"></script>
+    <script type="text/javascript" src="../libs/tween.js"></script>
+    <script type="text/javascript" src="../libs/MTLLoader.js"></script>
+    <script type="text/javascript" src="../libs/OBJLoader.js"></script>
+    <script type="text/javascript" src="../libs/FirstPersonControls.js"></script>
+    <script type="text/javascript" src="../libs/jquery-1.9.0.js"></script>
+    <script type="text/javascript" src="../libs/stats.js"></script>
+    <script type="text/javascript" src="../libs/dat.gui.js"></script>
+    <script type="text/javascript" src="../libs/TrackballControls.js"></script>
+    <script type="text/javascript" src="Ground.js"></script>
+    <script type="text/javascript" src="Robot.js"></script>
+    <script type="text/javascript" src="Ovo.js"></script>
+    <script type="text/javascript" src="Game.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <style>
+
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #life_bar {
+            position: absolute;
+            left:100px; top: 10px;
+            width:250px;
+            background-color: rgba(187, 187, 187, 0.8);
+            height: 20px;
+            border: solid black 1px;
+            border-radius: 2px;
+            box-shadow: rgba(206, 206, 206, 0.5) 2px 2px;
+            text-align: center;
+            color: black;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #progress {
+            height: 20px;
+            width: 100%;
+            background-color: rgb(49, 233, 49);
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Div which will show statistical information -->
+<div id="Stats-output">
+</div>
+
+<!-- Div which will show several messages -->
+<div style="position:absolute; left:100px; top:10px" id="Messages">
+</div>
+<div id="life_bar">
+    <div class="progress" id="progress"></div>
+</div>
+
+
+
+<!-- Div which will hold the Output -->
+<div id="WebGL-output">
+</div>
+</body>
+</html>
