@@ -1,8 +1,8 @@
-# Práctica Sistemas Gráficos ##### 2017-2018
+# **Práctica Sistemas Gráficos** *2017-2018*
 ## Robot
 
 
-![](robot/imgs/robot_squeme.png?raw=true "Esquema del robot)
+![](robot/imgs/robot_squeme.png?raw=true)
 
 ### Sesion 1
  * Cabeza que gira automáticamente.
@@ -18,8 +18,8 @@
 ### Sesión 3
  * Interacción mediante teclado
  * Texturas en los materiales
- * Fuente de alimentación en el robot  :electric_plug:
- * ~~Vista subjetiva~~
+ * Fuente de alimentación en el robot  :flashlight:
+ * ~~Vista subjetiva~~  :camera:
 
 ### Sesión 4
  * ~~Añadido de dificultad conforme el tiempo o puntos.~~  :watch:
