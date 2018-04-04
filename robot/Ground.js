@@ -20,10 +20,17 @@ class Ground extends THREE.Object3D {
     var texture = new THREE.TextureLoader().load( "imgs/pavement.jpg" );
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(50, 50);
-    this.ground = new THREE.Mesh (
+    this.ground_material = Physijs.createMaterial(
+      new THREE.MeshPhongMaterial ({map: texture}),
+      0.8,
+      0.4
+    )
+    this.ground = new Physijs.BoxMesh (
       new THREE.BoxGeometry (1000, 0.1, 1000, 1, 1, 1),
+      this.ground_material,
+      0
       //new THREE.MeshPhongMaterial ({color: 0x153249, specular: 0xfbf804, shininess: 70}));
-      new THREE.MeshPhongMaterial ({map: texture}));
+      );
     this.ground.applyMatrix (new THREE.Matrix4().makeTranslation (0,-0.1,0));
     this.ground.receiveShadow = true;
     this.ground.autoUpdateMatrix = false;

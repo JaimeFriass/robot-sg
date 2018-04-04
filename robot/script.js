@@ -226,7 +226,8 @@ function createRenderer () {
 function render() {
   requestAnimationFrame(render);
   stats.update();
-   
+
+  scene.simulate();
   scene.getCameraControls().update ();
   scene.animate(GUIcontrols);
 
@@ -255,7 +256,7 @@ function render() {
   scene.spotLightRobot.target = scene.target;
 
   TWEEN.update();
-  scene.simulate();
+  
   
   renderer.render(scene, scene.getCamera());
 }
@@ -326,6 +327,7 @@ $(function () {
   window.addEventListener ("mousewheel", onMouseWheel, true);   // For Chrome an others
   window.addEventListener ("DOMMouseScroll", onMouseWheel, true); // For Firefox
   
+  'use strict';
   // Web worker that configures the threads
   Physijs.scripts.worker = '../libs/physijs_worker.js';
 
@@ -335,6 +337,7 @@ $(function () {
   // create a scene, that will hold all our elements such as objects, cameras and lights.
   scene = new Game (renderer.domElement);
   
+  scene.setGravity(new THREE.Vector3( 0, -30, 0 ));
 
   createGUI(true);
 
