@@ -1,8 +1,11 @@
-# **Práctica Sistemas Gráficos** *2017-2018*
+# **Práctica 2 Sistemas Gráficos** *2017-2018*
 ## Robot
 
+Diseño e implementación de un sistema gráfico basado en un objeto articulado usando  **THREE.js**.
 
 ![](robot/imgs/robot_squeme.png?raw=true)
+
+Consiste en un juego donde hay que pilotar a un robot evitando las colisiones con objetos volantes malos, que restan energía, y con buenos que dotan de energía y/o puntos.
 
 ### Sesion 1
  * Cabeza que gira automáticamente.
