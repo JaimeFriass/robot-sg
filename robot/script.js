@@ -208,9 +208,7 @@ function draw_collitions(value) {
   } else {
     document.getElementById("life_bar").style.backgroundColor = 'gray';
   }
-  console.log()}
-
-
+}
 
 /// It creates and configures the WebGL renderer
 /**
@@ -257,6 +255,7 @@ function render() {
   scene.spotLightRobot.target = scene.target;
 
   TWEEN.update();
+  scene.simulate();
   
   renderer.render(scene, scene.getCamera());
 }
@@ -301,14 +300,11 @@ $(function () {
   ovo_movement1.chain(ovo_movement2);
 
   head_movement.onUpdate(function () {
-      
       head_rotation = position.p;
-
   });
 
   ovo_movement1.onUpdate(function () {
       updateRan();
-      
       ovo_pos = inicio_ovo.p;
   });
 
@@ -330,6 +326,12 @@ $(function () {
   window.addEventListener ("mousewheel", onMouseWheel, true);   // For Chrome an others
   window.addEventListener ("DOMMouseScroll", onMouseWheel, true); // For Firefox
   
+  // Web worker that configures the threads
+  Physijs.scripts.worker = '../libs/physijs_worker.js';
+
+  // Physics motor
+  Physijs.scripts.ammo = '../libs/ammo.js';
+
   // create a scene, that will hold all our elements such as objects, cameras and lights.
   scene = new Game (renderer.domElement);
   

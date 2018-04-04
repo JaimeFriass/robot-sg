@@ -3,7 +3,7 @@
 /**
  * @param renderer - The renderer to visualize the scene
  */
-class Game extends THREE.Scene {
+class Game extends Physijs.Scene {
   
   constructor (renderer) {
     super();

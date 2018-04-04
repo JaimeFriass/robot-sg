@@ -21,6 +21,11 @@ class Robot extends THREE.Object3D {
     var texturaa = new THREE.TextureLoader().load( "imgs/1.png" );
     this.material    = (parameters.material === undefined ? new THREE.MeshPhongMaterial ({map: texturaa}) : parameters.material);
           
+    this.mat = Physijs.createMaterial(
+      new THREE.MeshBasicMaterial({color: 0xff8888}),
+      0.8,
+      0.3
+    );
     // With these variables, the posititon of the hook is set
     this.rotHead = 0;
     this.rotBody = 0;
@@ -98,9 +103,16 @@ class Robot extends THREE.Object3D {
 
   createFoot() {
     var texture = new THREE.TextureLoader().load( "imgs/black_metal.jpg" );
-    var foot = new THREE.Mesh (
+    var mat = Physijs.createMaterial(
+      new THREE.MeshPhongMaterial ({map: texture}),
+      0.8,
+      0.4
+    )
+    var foot = new Physijs.CylinderMesh (
       new THREE.CylinderBufferGeometry( 2, 4, 2, 31 ),
-      new THREE.MeshPhongMaterial ({map: texture}));
+      mat,
+      1 // mass
+    );
     foot.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 0, this.pos_z));
     foot.castShadow = true;
     return foot;
@@ -108,9 +120,16 @@ class Robot extends THREE.Object3D {
 
   createLeg () {
     var texture = new THREE.TextureLoader().load( "imgs/white_metal.jpg" );
-    var hoof = new THREE.Mesh (
+    var mat = Physijs.createMaterial(
+      new THREE.MeshPhongMaterial ({map: texture}),
+      0.8,
+      0.4
+    )
+    var hoof = new Physijs.CylinderMesh (
       new THREE.CylinderBufferGeometry( 2, 2, 30, 31 ),
-      new THREE.MeshPhongMaterial ({map: texture}));
+      mat,
+      1 // mass
+    );
     hoof.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 15, this.pos_z));
     hoof.castShadow = true;
 
@@ -120,16 +139,30 @@ class Robot extends THREE.Object3D {
   createHead() {
     var textura_cara = new THREE.TextureLoader().load( "imgs/fotito2.jpg" );
     var texture = new THREE.TextureLoader().load( "imgs/white_metal.jpg" );
-    var skull = new THREE.Mesh (
+    var mat = Physijs.createMaterial(
+      new THREE.MeshPhongMaterial ({map: texture}),
+      0.8,
+      0.4
+    )
+    var skull = new Physijs.SphereMesh (
       new THREE.SphereGeometry( 11, 32, 32),
-      new THREE.MeshPhongMaterial ({map : texture}));
+      mat,
+      5
+    );
     skull.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 0, this.pos_z));
     skull.castShadow = true;
 
     var textura_ojo = new THREE.TextureLoader().load( "imgs/white_metal.jpg" );
-    var eye = new THREE.Mesh (
+    var mat = Physijs.createMaterial(
+      new THREE.MeshPhongMaterial ({map: textura_ojo}),
+      0.8,
+      0.4
+    )
+    var eye = new Physijs.CylinderMesh (
       new THREE.CylinderBufferGeometry( 2, 2, 8, 30 ),
-      new THREE.MeshPhongMaterial ({map: textura_ojo}));
+      mat,
+      2
+    );
     eye.geometry.applyMatrix (new THREE.Matrix4().makeRotationX (Math.PI / 2));
     eye.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 38, this.pos_z + 9));
     eye.castShadow = true;
@@ -144,9 +177,16 @@ class Robot extends THREE.Object3D {
   createBody() {
 
     // CHEST
-    var chest = new THREE.Mesh (
+    var mat = Physijs.createMaterial(
+      new THREE.MeshPhongMaterial ({map: this.tex_metal_blanco}),
+      0.8,
+      0.4
+    )
+    var chest = new Physijs.CylinderMesh (
       new THREE.CylinderBufferGeometry( 11, 11, 28, 32 ),
-      new THREE.MeshPhongMaterial ({map: this.tex_metal_blanco}));
+      mat,
+      10
+    );
     chest.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 20, this.pos_z));
     chest.castShadow = true;
 
@@ -177,9 +217,16 @@ class Robot extends THREE.Object3D {
 
   createShoulder() {
     var texture = new THREE.TextureLoader().load( "imgs/black_metal.jpg" );
-    var shoulder = new THREE.Mesh (
+    var mat = Physijs.createMaterial(
+      new THREE.MeshPhongMaterial ({map: texture}),
+      0.8,
+      0.4
+    )
+    var shoulder = new Physijs.CylinderMesh (
       new THREE.CylinderBufferGeometry( 3, 3, 8, 32 ),
-      new THREE.MeshPhongMaterial ({map: texture}));
+      mat,
+      2
+    );
                                     
     shoulder.castShadow = true;
     //shoulder.rotation.z = Math.PI / 2;
