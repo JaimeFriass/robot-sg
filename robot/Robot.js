@@ -41,6 +41,7 @@ class Robot extends THREE.Object3D {
     this.mesh = null;
     this.left_leg = null;
     this.right_leg = null;
+    this.look_point = null;
 
     // Life
     this.life = 100;
@@ -199,6 +200,14 @@ class Robot extends THREE.Object3D {
       mat,
       10
     );
+    this.look_point = new THREE.Mesh();
+    var punto = new THREE.Mesh(
+      new THREE.BoxGeometry(1,1,1),
+      new THREE.MeshPhongMaterial ({map: this.tex_metal_blanco})
+    )
+
+    punto.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (40, 50, 0));
+    this.look_point.add(punto);
     chest.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 20, this.pos_z));
     chest.castShadow = true;
 
@@ -219,7 +228,7 @@ class Robot extends THREE.Object3D {
     this.head.geometry.applyMatrix (new THREE.Matrix4().makeRotationY(Math.PI / 2));
      
     this.head.rotation.y = this.rotHead;
-    
+    chest.add(this.look_point);
     chest.add(this.head);
     chest.add(shoulder_left);
     chest.add(shoulder_right);
@@ -280,6 +289,12 @@ class Robot extends THREE.Object3D {
     var prueba = new THREE.Vector3();
     prueba.setFromMatrixPosition(this.robot.matrixWorld);
     return prueba;
+  }
+
+  getLookPoint() {
+    var vector = new THREE.Vector3();
+    vector.setFromMatrixPosition(this.look_point.matrixWorld);
+    return vector;
   }
 
   getRot() {

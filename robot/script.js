@@ -240,21 +240,25 @@ function render() {
   scene.loop(head_rotation);
   scene.ovo_movement(ovo_pos);
   draw_collitions(scene.updateCollisions());
-  //position = scene.getPos();
+  position = scene.getPos();
   //rotation = scene.getRot();
   //console.log(scene.robot.rotation.y);
 
-  //scene.camera.position.x = position.x ;
+  scene.camera.position.x = position.x ;
   //scene.camera.position.y = position.y + 40;
-  //scene.camera.position.z = position.z;
+  scene.camera.position.z = position.z;
   //scene.camera.rotation.y = rotation * Math.PI / 2;
   posicion = scene.getPos();
+  look_point = scene.getLookPoint();
+  
+  
   scene.spotLightRobot.position.x = posicion.x;
   scene.spotLightRobot.position.z = posicion.z;
-  
+  scene.spotLightRobot.target = scene.target;
+  //scene.camera.lookAt(look_point);
   scene.target.position.x = posicion.x;
   scene.target.position.z = posicion.z;
-  scene.spotLightRobot.target = scene.target;
+  
 
   TWEEN.update();
   

@@ -54,6 +54,7 @@ class Game extends Physijs.Scene {
 
   getPos() { return this.robot.getPos(); }
   getRot() { return this.robot.getRot(); }
+  getLookPoint() { return this.robot.getLookPoint();}
   
   /// It creates lights and adds them to the graph
   createLights () {
