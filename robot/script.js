@@ -4,6 +4,8 @@
 /// The scene graph
 scene = null;
 
+renderer = null;
+
 
 /// The GUI information
 GUIcontrols = null;
@@ -227,7 +229,6 @@ function render() {
   requestAnimationFrame(render);
   stats.update();
 
-  scene.simulate();
   scene.getCameraControls().update ();
   scene.animate(GUIcontrols);
 
@@ -259,6 +260,7 @@ function render() {
   
   
   renderer.render(scene, scene.getCamera());
+  scene.simulate();
 }
 
 function updateRan() {
@@ -270,6 +272,11 @@ function updateRan() {
 
 /// The main function
 $(function () {
+  'use strict';
+  // Web worker that configures the threads
+  Physijs.scripts.worker = 'physijs_worker.js';
+  // Physics motor
+  Physijs.scripts.ammo = 'ammo.js';
   // create a render and set the size
   renderer = createRenderer();
   // add the output of the renderer to the html element
@@ -327,17 +334,25 @@ $(function () {
   window.addEventListener ("mousewheel", onMouseWheel, true);   // For Chrome an others
   window.addEventListener ("DOMMouseScroll", onMouseWheel, true); // For Firefox
   
-  'use strict';
-  // Web worker that configures the threads
-  Physijs.scripts.worker = '../libs/physijs_worker.js';
 
-  // Physics motor
-  Physijs.scripts.ammo = '../libs/ammo.js';
 
   // create a scene, that will hold all our elements such as objects, cameras and lights.
   scene = new Game (renderer.domElement);
   
-  scene.setGravity(new THREE.Vector3( 0, -30, 0 ));
+  scene.setGravity(new THREE.Vector3( 1, -50, 0 ));
+
+  scene.addEventListener('update',
+    function() {
+      scene.simulate( undefined, 1 );
+    }
+  );		
+  
+  scene.addEventListener(
+    'update',
+    function() {
+      scene.simulate( undefined, 2 );
+    }
+  );
 
   createGUI(true);
 

@@ -29,6 +29,8 @@ class Game extends Physijs.Scene {
 
     this.ovos = this.createOvo();
     this.add(this.ovos);
+
+    this.fixedTimeStep =  1 / 120;
   }
   
   /// It creates the camera and adds it to the graph

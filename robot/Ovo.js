@@ -7,33 +7,47 @@ class Ovo extends THREE.Object3D {
         this.clase = null;
 
         this.ovo = this.createOvo();
-        this.ovo2 = this.createOvoMod();
+        //this.ovo2 = this.createOvoMod();
 
         this.feedBack = new THREE.BoxHelper (this.ovo2, 0xFF0000);
         this.feedBack.visible = true;
         
-        this.add(this.ovo2);
+        this.add(this.ovo);
         this.add(this.feedBack);
     }
 
     createOvo() {
         var texture = new THREE.TextureLoader().load("imgs/3.png");
+        var ovo_material = Physijs.createMaterial(
+            new THREE.MeshPhongMaterial({ map: texture }),
+            .6,
+            .3
+        );
+
+        var ovo1 = new Physijs.BoxMesh(
+            new THREE.BoxGeometry(10, 10, 10),
+            ovo_material,
+            3
+        );
+
+        /*
         var ovo = new THREE.Mesh(
             new THREE.TorusBufferGeometry( 8, 4, 18, 100 ),
             new THREE.MeshPhongMaterial({ map: texture }));
+        */
         var random = Math.floor((Math.random() * 100) - 50);
-        ovo.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(random, 25, 100));
-        return ovo;
+        ovo1.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(random, 25, 100));
+        return ovo1;
     }
 
     getPos() {
         var pos = new THREE.Vector3();
-        pos.setFromMatrixPosition(this.ovo2.matrixWorld);
+        pos.setFromMatrixPosition(this.ovo.matrixWorld);
         return pos;
     }
 
     move(pos_ovo) {
-        this.ovo2.position.z = pos_ovo;
+        this.ovo.position.z = pos_ovo;
     }
 
     createOvoMod() {

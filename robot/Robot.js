@@ -97,6 +97,18 @@ class Robot extends THREE.Object3D {
 
     robot.rotation.y = this.robot_rotation;
 
+    // Let position & rotation to be updated
+    robot.__dirtyPosition = true;
+    robot.__dirtyRotation = true;
+
+    //robot.setLinearVelocity(new THREE.Vector3(0, 0, 0));
+    //robot.setAngularVelocity(new THREE.Vector3(0, 0, 0));
+
+    robot.addEventListener( 'collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
+      // `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
+      console.log(other_object);
+    });
+
     robot.updateMatrix();
     return robot;
   }
@@ -109,7 +121,7 @@ class Robot extends THREE.Object3D {
       0.4
     )
     var foot = new Physijs.CylinderMesh (
-      new THREE.CylinderBufferGeometry( 2, 4, 2, 31 ),
+      new THREE.CylinderGeometry( 2, 4, 2, 31 ),
       mat,
       1 // mass
     );
@@ -126,7 +138,7 @@ class Robot extends THREE.Object3D {
       0.4
     )
     var hoof = new Physijs.CylinderMesh (
-      new THREE.CylinderBufferGeometry( 2, 2, 30, 31 ),
+      new THREE.CylinderGeometry( 2, 2, 30, 31 ),
       mat,
       1 // mass
     );
@@ -159,7 +171,7 @@ class Robot extends THREE.Object3D {
       0.4
     )
     var eye = new Physijs.CylinderMesh (
-      new THREE.CylinderBufferGeometry( 2, 2, 8, 30 ),
+      new THREE.CylinderGeometry( 2, 2, 8, 30 ),
       mat,
       2
     );
@@ -183,7 +195,7 @@ class Robot extends THREE.Object3D {
       0.4
     )
     var chest = new Physijs.CylinderMesh (
-      new THREE.CylinderBufferGeometry( 11, 11, 28, 32 ),
+      new THREE.CylinderGeometry( 11, 11, 28, 32 ),
       mat,
       10
     );
@@ -223,7 +235,7 @@ class Robot extends THREE.Object3D {
       0.4
     )
     var shoulder = new Physijs.CylinderMesh (
-      new THREE.CylinderBufferGeometry( 3, 3, 8, 32 ),
+      new THREE.CylinderGeometry( 3, 3, 8, 32 ),
       mat,
       2
     );

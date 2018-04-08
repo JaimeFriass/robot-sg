@@ -36,28 +36,39 @@ class Ground extends THREE.Object3D {
     this.ground.autoUpdateMatrix = false;
     this.add (this.ground);
 
+    this.obs1 = this.createObstacles(30, 30, -10);
     /*
-    this.obs1 = this.createObstacles(-120, 75, -150);
     this.obs2 = this.createObstacles(-10, 50, -200);
     this.obs3 = this.createObstacles(140, 75, -160);
     this.obs4 = this.createObstacles(-280, 75, -50);
+    */
     this.add(this.obs1);
+    /*
     this.add(this.obs2);
     this.add(this.obs3);
     this.add(this.obs4);
     */
 
-    this.environment = this.createHouses();
-    this.add(this.environment);
+    //this.environment = this.createHouses();
+    //this.add(this.environment);
   }
 
   createObstacles(posx, posy, posz) {
     var texture = new THREE.TextureLoader().load("imgs/fachada.png");
+    var obstacle_mat = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: texture }),
+      .6,
+      .3
+    )
+
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set( 1, 3 );
-    var obs = new THREE.Mesh(
-      new THREE.BoxGeometry( 100, 150, 80 ),
-        new THREE.MeshPhongMaterial({ map: texture }));
+    var obs = new Physijs.BoxMesh(
+      new THREE.BoxGeometry( 30, 20, 20 ),
+      obstacle_mat,
+      5
+    )
+
     obs.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(posx, posy, posz));
     return obs;
   }
