@@ -24,6 +24,8 @@ ovo_pos = null;
 inicio_ovo = null;
 fin_ovo = null;
 
+first_camera = null;
+
 /// The current mode of the application
 
 /// It creates the GUI and, optionally, adds statistic information
@@ -187,9 +189,14 @@ function onKeyDown(event) {
         case 83: // S
             keypressed = 83;
             break;
+        case 67: // C
+            if (first_camera)
+              first_camera = false;
+            else
+              first_camera = true;
         default:
             keypressed = keycode;
-            //console.log("Tecla pulsada: " + keypressed);
+            console.log("Tecla pulsada: " + keypressed);
             break;
     }
 }
@@ -202,7 +209,6 @@ function onKeyUp(event) {
 
 function randomPos(max) {
         return Math.floor((Math.random() * max) - max/2);
-
 }
 function draw_collitions(value) {
   if (value) {
@@ -229,7 +235,12 @@ function render() {
   requestAnimationFrame(render);
   stats.update();
 
-  scene.getCameraControls().update ();
+  if (false) {
+    scene.getCameraControls(true).update ();
+  } else {
+    scene.getCameraControls(false).update ();
+  }
+
   scene.animate(GUIcontrols);
 
   if (keypressed != null) {
@@ -241,16 +252,11 @@ function render() {
   scene.ovo_movement(ovo_pos);
   draw_collitions(scene.updateCollisions());
   position = scene.getPos();
-  //rotation = scene.getRot();
-  //console.log(scene.robot.rotation.y);
 
-  scene.camera.position.x = position.x ;
+  //scene.camera.position.x = position.x ;
   //scene.camera.position.y = position.y + 40;
-  scene.camera.position.z = position.z;
-  //scene.camera.rotation.y = rotation * Math.PI / 2;
+  //scene.camera.position.z = position.z;
   posicion = scene.getPos();
-  look_point = scene.getLookPoint();
-  
   
   scene.spotLightRobot.position.x = posicion.x;
   scene.spotLightRobot.position.z = posicion.z;
@@ -258,12 +264,9 @@ function render() {
   //scene.camera.lookAt(look_point);
   scene.target.position.x = posicion.x;
   scene.target.position.z = posicion.z;
-  
 
   TWEEN.update();
-  
-  
-  renderer.render(scene, scene.getCamera());
+  renderer.render(scene, scene.getCamera(first_camera));
   scene.simulate();
 }
 
@@ -271,7 +274,6 @@ function updateRan() {
     var ran = randomPos(200);
     inicio_ovo = { p: ran };
     fin_ovo = { p: -ran };
-    console.log("MAX: " + ran);
 }
 
 /// The main function
@@ -292,8 +294,6 @@ $(function () {
   var ran = randomPos(350);
   inicio_ovo = { p: 200 };
   fin_ovo = { p: -500 };
-
-
 
   // Movimiento de cabeza
   var head_movement = new TWEEN.Tween(position)

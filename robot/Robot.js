@@ -43,6 +43,10 @@ class Robot extends THREE.Object3D {
     this.right_leg = null;
     this.look_point = null;
 
+    this.viewpoint = null;
+    this.cameraojo = null;
+    this.trackballControls = null;
+
     // Life
     this.life = 100;
 
@@ -180,7 +184,6 @@ class Robot extends THREE.Object3D {
     eye.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 38, this.pos_z + 9));
     eye.castShadow = true;
     
-    
     skull.add(eye);
     skull.updateMatrix();
       
@@ -228,6 +231,16 @@ class Robot extends THREE.Object3D {
     this.head.geometry.applyMatrix (new THREE.Matrix4().makeRotationY(Math.PI / 2));
      
     this.head.rotation.y = this.rotHead;
+
+    this.viewpoint = new Physijs.SphereMesh(new THREE.SphereGeometry(0.5, 50, 50), 0);
+    this.viewpoint.position.set(0, 2, 50);
+    this.cameraojo = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.cameraojo.lookAt(this.viewpoint.position);
+    this.cameraojo.position.set(0, 45, 9);
+
+    chest.add(this.cameraojo);
+    chest.add(this.viewpoint);
+
     chest.add(this.look_point);
     chest.add(this.head);
     chest.add(shoulder_left);
@@ -302,6 +315,9 @@ class Robot extends THREE.Object3D {
   }
 
   getLife() { return this.life; }
+  getCamera() { return this.cameraojo;}
+  getCameraControls () { return this.trackballControls; }
+  disableCamera() {this.cameraojo.enabled = false;}
 
   rotar(girar) {
       if (girar)
@@ -358,25 +374,25 @@ class Robot extends THREE.Object3D {
   }
 
   turnLeft() {
-      this.robot_rotation = this.robot_rotation + 0.05;
+      this.robot_rotation = this.robot_rotation + 0.02;
       this.robot.rotation.y = this.robot_rotation;
   }
 
   turnRight() {
-      this.robot_rotation = this.robot_rotation - 0.05;
+      this.robot_rotation = this.robot_rotation - 0.02;
       this.robot.rotation.y = this.robot_rotation;
   }
 
   walkForward() {
-      this.pos_x = this.pos_x + 0.05;
+      this.pos_x = this.pos_x + 1;
       //this.robot.position.x = this.robot.position.x + 0.5;
-      this.robot.translateZ(0.5);
+      this.robot.translateZ(1);
   }
 
   walkBack() {
-      this.pos_x = this.pos_x - 0.05;
+      this.pos_x = this.pos_x - 1;
       //this.robot.position.x = this.robot.position.x - 0.5;
-      this.robot.translateZ(-0.5);
+      this.robot.translateZ(-1);
   }
   
 }

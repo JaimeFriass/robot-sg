@@ -13,7 +13,8 @@ class Game extends Physijs.Scene {
     this.ambientLight = null;
     this.spotLight = null;
     this.spotLightRobot = null;
-    this.camera = null;
+    this.third_camera = null;
+    this.trackballControlsFP = null;
     this.trackballControls = null;
     this.robot = null;
     this.ground = null;
@@ -21,11 +22,13 @@ class Game extends Physijs.Scene {
     this.target = null;
   
     this.createLights ();
-    this.createCamera (renderer);
+    
     this.axis = new THREE.AxisHelper (25);
     this.add (this.axis);
     this.model = this.createModel ();
     this.add(this.model);
+    this.createCamera (renderer);
+    this.createFirstCamera(renderer);
 
     this.ovos = this.createOvo();
     this.add(this.ovos);
@@ -38,16 +41,43 @@ class Game extends Physijs.Scene {
    * @param renderer - The renderer associated with the camera
    */
   createCamera (renderer) {
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.set (60, 60, 60);	
+    this.third_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.third_camera.position.set (60, 60, 60);	
     var look = new THREE.Vector3 (0,40,0);
-    this.camera.lookAt(look);
+    this.third_camera.lookAt(look);
+    this.trackballControlsFP = new THREE.TrackballControls (this.robot.getCamera(), renderer);
+    this.trackballControlsFP.rotateSpeed = 5;
+    this.trackballControlsFP.zoomSpeed = -2;
+    this.trackballControlsFP.panSpeed = 0.5;
+    this.trackballControlsFP.minDistance = 40;
+    this.trackballControlsFP.target = look;
+    
+    this.add(this.third_camera);
+  }
 
-    this.trackballControls = new THREE.TrackballControls (this.camera, renderer);
-    this.trackballControls.rotateSpeed = 5;
-    this.trackballControls.zoomSpeed = -2;
-    this.trackballControls.panSpeed = 0.5;
-    this.trackballControls.target = look;
+  createFirstCamera(renderer) {
+    var look = new THREE.Vector3 (0,40,0);
+    this.trackballControlsFP = new THREE.TrackballControls (this.robot.getCamera(), renderer);
+    this.trackballControlsFP.rotateSpeed = 5;
+    this.trackballControlsFP.zoomSpeed = -2;
+    this.trackballControlsFP.panSpeed = 0.5;
+    this.trackballControlsFP.minDistance = 40;
+    this.trackballControlsFP.target = look;
+
+  }
+
+  createThirdCamera() {
+    this.third_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.third_camera.position.set (60, 60, 60);	
+    var look = new THREE.Vector3 (0,40,0);
+    this.third_camera.lookAt(look);
+
+    this.trackballControlsFP = new THREE.trackballControls (this.robot.getCamera(), renderer);
+    this.trackballControlsFP.rotateSpeed = 5;
+    this.trackballControlsFP.zoomSpeed = -2;
+    this.trackballControlsFP.panSpeed = 0.5;
+    this.trackballControlsFP.minDistance = 40;
+    this.trackballControlsFP.target = look;
     
     this.add(this.camera);
   }
@@ -55,6 +85,7 @@ class Game extends Physijs.Scene {
   getPos() { return this.robot.getPos(); }
   getRot() { return this.robot.getRot(); }
   getLookPoint() { return this.robot.getLookPoint();}
+  disableFirstCamera() { this.robot.disableCamera(); }
   
   /// It creates lights and adds them to the graph
   createLights () {
@@ -167,11 +198,23 @@ class Game extends Physijs.Scene {
       return returned;
   }
 
-  getCamera () { return this.camera;}
-  getCameraControls () { return this.trackballControls; }
+  getCamera (first_camera) { 
+    if (first_camera)  
+        return this.third_camera;
+    else
+      return this.robot.getCamera();
+    }
+
+  getCameraControls (first_camera) { 
+    if (first_camera) 
+     return this.trackballControlsFP;
+    else 
+     //return this.robot.getCameraControls();
+     return this.trackballControlsFP;
+    }
   setCameraAspect (anAspectRatio) {
-    this.camera.aspect = anAspectRatio;
-    this.camera.updateProjectionMatrix();
+    this.third_camera.aspect = anAspectRatio;
+    this.third_camera.updateProjectionMatrix();
   }
 
   getRobotLife() { return this.robot.getLife(); }
