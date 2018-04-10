@@ -19,6 +19,8 @@ class Game extends Physijs.Scene {
     this.robot = null;
     this.ground = null;
     this.ovo = null;
+    this.ovos = new THREE.Object3D();
+    this.add(this.ovos);
     this.target = null;
   
     this.createLights ();
@@ -28,10 +30,11 @@ class Game extends Physijs.Scene {
     this.model = this.createModel ();
     this.add(this.model);
     this.createCamera (renderer);
-    this.createFirstCamera(renderer);
 
-    this.ovos = this.createOvo();
-    this.add(this.ovos);
+    //this.ovos = this.createOvo();
+    //this.add(this.ovos);
+
+    this.fog = new THREE.Fog(0xfffff3, 100, 600);
 
     this.fixedTimeStep =  1 / 120;
   }
@@ -45,7 +48,7 @@ class Game extends Physijs.Scene {
     this.third_camera.position.set (60, 60, 60);	
     var look = new THREE.Vector3 (0,40,0);
     this.third_camera.lookAt(look);
-    this.trackballControlsFP = new THREE.TrackballControls (this.robot.getCamera(), renderer);
+    this.trackballControlsFP = new THREE.TrackballControls (this.third_camera, renderer);
     this.trackballControlsFP.rotateSpeed = 5;
     this.trackballControlsFP.zoomSpeed = -2;
     this.trackballControlsFP.panSpeed = 0.5;
@@ -55,37 +58,11 @@ class Game extends Physijs.Scene {
     this.add(this.third_camera);
   }
 
-  createFirstCamera(renderer) {
-    var look = new THREE.Vector3 (0,40,0);
-    this.trackballControlsFP = new THREE.TrackballControls (this.robot.getCamera(), renderer);
-    this.trackballControlsFP.rotateSpeed = 5;
-    this.trackballControlsFP.zoomSpeed = -2;
-    this.trackballControlsFP.panSpeed = 0.5;
-    this.trackballControlsFP.minDistance = 40;
-    this.trackballControlsFP.target = look;
-
-  }
-
-  createThirdCamera() {
-    this.third_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.third_camera.position.set (60, 60, 60);	
-    var look = new THREE.Vector3 (0,40,0);
-    this.third_camera.lookAt(look);
-
-    this.trackballControlsFP = new THREE.trackballControls (this.robot.getCamera(), renderer);
-    this.trackballControlsFP.rotateSpeed = 5;
-    this.trackballControlsFP.zoomSpeed = -2;
-    this.trackballControlsFP.panSpeed = 0.5;
-    this.trackballControlsFP.minDistance = 40;
-    this.trackballControlsFP.target = look;
-    
-    this.add(this.camera);
-  }
-
   getPos() { return this.robot.getPos(); }
   getRot() { return this.robot.getRot(); }
   getLookPoint() { return this.robot.getLookPoint();}
   disableFirstCamera() { this.robot.disableCamera(); }
+  iterateOvos() { /*this.ovos.iterate();*/}
   
   /// It creates lights and adds them to the graph
   createLights () {
@@ -132,9 +109,23 @@ class Game extends Physijs.Scene {
 
   createOvo() {
       var ovo = new THREE.Object3D();
-      this.ovo = new Ovo({});
-      ovo.add(this.ovo);
+      ovo = new Ovo({});
       return ovo;
+  }
+
+  updateOvos() {
+      
+      for (var i = 0; i < this.ovos.children.length; i++) {
+          if (this.ovos.children[i].getPos().x == 400) {
+              this.remove(this.ovos.children[i]);
+          }
+          this.ovos.children[i].iterate();
+      }
+      if (this.ovos.children.length < 4) {
+          var texture = new THREE.TextureLoader().load("imgs/3.png");
+          var new_ovo = this.createOvo();
+          this.ovos.add(new_ovo);
+      }
   }
   
   // Public methods
@@ -147,14 +138,6 @@ class Game extends Physijs.Scene {
       //this.robot.setRotHead(controls.rotation);
       this.axis.visible = controls.axis;
       this.spotLight.intensity = controls.lightIntensity;
-  }
-
-  loop(pos) {
-      this.robot.looping(pos);
-  }
-
-  ovo_movement(pos_ovo) {
-      this.ovo.move(pos_ovo);
   }
 
   keycontrol(controls) {
@@ -185,6 +168,14 @@ class Game extends Physijs.Scene {
           case 99:
               this.robot.moveDown();
               break;
+
+          case 88:
+              this.robot.rotHeadRight();
+              break;
+          case 90:
+              this.robot.rotHeadLeft();
+              break;
+
       }
 
   }

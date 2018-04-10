@@ -44,7 +44,7 @@ class Robot extends THREE.Object3D {
     this.look_point = null;
 
     this.viewpoint = null;
-    this.cameraojo = null;
+    this.eye_camera = null;
     this.trackballControls = null;
 
     // Life
@@ -56,10 +56,12 @@ class Robot extends THREE.Object3D {
     this.robot = this.createRobot();
     this.robot.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(10, 100, 0));
     // A way of feedback, a red jail will be visible around the robot when a box is taken by it
-    this.feedBack = new THREE.BoxHelper (this.robot, 0xFF0000);
-    this.feedBack.visible = false;
+    
+    //this.feedBack = new THREE.BoxHelper (this.robot, 0xFF0000);
+    //this.feedBack.visible = false;
+    //this.add (this.feedBack);
     this.add (this.robot);
-    this.add (this.feedBack);
+    
 
   }
   
@@ -114,6 +116,7 @@ class Robot extends THREE.Object3D {
       console.log(other_object);
     });
 
+    robot.position.y = 4;
     robot.updateMatrix();
     return robot;
   }
@@ -183,6 +186,18 @@ class Robot extends THREE.Object3D {
     eye.geometry.applyMatrix (new THREE.Matrix4().makeRotationX (Math.PI / 2));
     eye.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 38, this.pos_z + 9));
     eye.castShadow = true;
+
+
+    this.viewpoint = new Physijs.SphereMesh(new THREE.SphereGeometry(0.5, 50, 50), 0);
+    this.viewpoint.position.set(0, -4, 50);
+    this.eye_camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    this.eye_camera.lookAt(this.viewpoint.position);
+    
+    this.eye_camera.position.set(0, 40, 9);
+
+    skull.add(this.eye_camera);
+    skull.add(this.viewpoint);
     
     skull.add(eye);
     skull.updateMatrix();
@@ -191,7 +206,6 @@ class Robot extends THREE.Object3D {
   }
 
   createBody() {
-
     // CHEST
     var mat = Physijs.createMaterial(
       new THREE.MeshPhongMaterial ({map: this.tex_metal_blanco}),
@@ -203,14 +217,7 @@ class Robot extends THREE.Object3D {
       mat,
       10
     );
-    this.look_point = new THREE.Mesh();
-    var punto = new THREE.Mesh(
-      new THREE.BoxGeometry(1,1,1),
-      new THREE.MeshPhongMaterial ({map: this.tex_metal_blanco})
-    )
 
-    punto.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (40, 50, 0));
-    this.look_point.add(punto);
     chest.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 20, this.pos_z));
     chest.castShadow = true;
 
@@ -229,19 +236,7 @@ class Robot extends THREE.Object3D {
     this.head = this.createHead();
     this.head.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 35, this.pos_z));
     this.head.geometry.applyMatrix (new THREE.Matrix4().makeRotationY(Math.PI / 2));
-     
-    this.head.rotation.y = this.rotHead;
 
-    this.viewpoint = new Physijs.SphereMesh(new THREE.SphereGeometry(0.5, 50, 50), 0);
-    this.viewpoint.position.set(0, 2, 50);
-    this.cameraojo = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.cameraojo.lookAt(this.viewpoint.position);
-    this.cameraojo.position.set(0, 45, 9);
-
-    chest.add(this.cameraojo);
-    chest.add(this.viewpoint);
-
-    chest.add(this.look_point);
     chest.add(this.head);
     chest.add(shoulder_left);
     chest.add(shoulder_right);
@@ -267,8 +262,20 @@ class Robot extends THREE.Object3D {
     return shoulder;
   }
 
-  looping(pos) {
-      this.head.rotation.y = pos;
+  updateCol() {
+    var originPoint = this.robot.position.clone();
+
+    for (var vertexIndex = 0; vertexIndex < this.robot.geometry.vertices.length; vertexIndex++) {
+      var localVertex = this.robot.geometry.vertices[vertexIndex].clone();
+      var globalVertex = localVertex.applyMatrix4(this.robot.matrix);
+      var directionVector = globalVertex.sub(this.robot.position);
+
+      var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize());
+      var collisionsResults = ray.intersectObjects(collidableMeshList);
+      if (collisionsResults.length > 0 && collisionsResults[0].distance < directionVector.length())
+        console.log("ASDDDDDDDDDDDDDD");
+    }
+
   }
 
   intersectOvo(ovo) {
@@ -315,9 +322,9 @@ class Robot extends THREE.Object3D {
   }
 
   getLife() { return this.life; }
-  getCamera() { return this.cameraojo;}
+  getCamera() { return this.eye_camera;}
   getCameraControls () { return this.trackballControls; }
-  disableCamera() {this.cameraojo.enabled = false;}
+  disableCamera() {this.eye_camera.enabled = false;}
 
   rotar(girar) {
       if (girar)
@@ -328,13 +335,21 @@ class Robot extends THREE.Object3D {
       this.head.rotation.y = this.rotHead;
   }
 
-  loopAnimation() {
-      this.head.rotation.y = this.origen.p;
-  }
 
   // ****************************************************************//
   //                CONTROLES DESDE TECLADO                          //
   // ****************************************************************//
+  rotHeadLeft() {
+    if (this.head.rotation.y < (Math.PI / 180)*40) {
+      this.head.rotation.y = this.head.rotation.y + 0.03;
+    }
+  }
+
+  rotHeadRight() {
+    if (this.head.rotation.y > -(Math.PI / 180)*40) {
+      this.head.rotation.y = this.head.rotation.y - 0.03;
+    }
+  }
 
   rotBodyForward() {
       if (this.rotBody < (Math.PI / 180)*20 ) {
@@ -374,12 +389,12 @@ class Robot extends THREE.Object3D {
   }
 
   turnLeft() {
-      this.robot_rotation = this.robot_rotation + 0.02;
+      this.robot_rotation = this.robot_rotation + 0.03;
       this.robot.rotation.y = this.robot_rotation;
   }
 
   turnRight() {
-      this.robot_rotation = this.robot_rotation - 0.02;
+      this.robot_rotation = this.robot_rotation - 0.03;
       this.robot.rotation.y = this.robot_rotation;
   }
 

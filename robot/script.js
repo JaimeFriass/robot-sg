@@ -194,9 +194,15 @@ function onKeyDown(event) {
               first_camera = false;
             else
               first_camera = true;
+        case 88: // Z
+            keypressed = 90;
+            break;
+        case 90: // X
+            keypressed = 88;
+            break;
         default:
             keypressed = keycode;
-            console.log("Tecla pulsada: " + keypressed);
+            //console.log("Tecla pulsada: " + keypressed);
             break;
     }
 }
@@ -248,14 +254,9 @@ function render() {
   }
 
   setLife(scene.getRobotLife());
-  scene.loop(head_rotation);
-  scene.ovo_movement(ovo_pos);
-  draw_collitions(scene.updateCollisions());
+  //draw_collitions(scene.updateCollisions());
+ 
   position = scene.getPos();
-
-  //scene.camera.position.x = position.x ;
-  //scene.camera.position.y = position.y + 40;
-  //scene.camera.position.z = position.z;
   posicion = scene.getPos();
   
   scene.spotLightRobot.position.x = posicion.x;
@@ -265,22 +266,20 @@ function render() {
   scene.target.position.x = posicion.x;
   scene.target.position.z = posicion.z;
 
+  scene.iterateOvos();
+  scene.updateOvos();
+
   TWEEN.update();
   renderer.render(scene, scene.getCamera(first_camera));
   scene.simulate();
 }
 
-function updateRan() {
-    var ran = randomPos(200);
-    inicio_ovo = { p: ran };
-    fin_ovo = { p: -ran };
-}
 
 /// The main function
 $(function () {
   'use strict';
   // Web worker that configures the threads
-  Physijs.scripts.worker = 'physijs_worker.js';
+  Physijs.scripts.worker = 'js/physijs_worker.js';
   // Physics motor
   Physijs.scripts.ammo = 'ammo.js';
   // create a render and set the size
@@ -288,45 +287,6 @@ $(function () {
   // add the output of the renderer to the html element
   $("#WebGL-output").append(renderer.domElement);
 
-  var position = { p: -1};
-  var target = { p: 1 };
-
-  var ran = randomPos(350);
-  inicio_ovo = { p: 200 };
-  fin_ovo = { p: -500 };
-
-  // Movimiento de cabeza
-  var head_movement = new TWEEN.Tween(position)
-      .to(target, 1500)
-    .easing(TWEEN.Easing.Bounce.In)
-    .repeat(Infinity)
-    .yoyo(true);
-
-  // Movimiento de ovo1
-  var ovo_movement1 = new TWEEN.Tween(inicio_ovo).easing(TWEEN.Easing.Quadratic.In)
-        .to(fin_ovo, 6000).repeat(Infinity);
-
-  var ovo_movement2 = new TWEEN.Tween(inicio_ovo).easing(TWEEN.Easing.Quadratic.In)
-        .to(fin_ovo, 6000).chain(ovo_movement1);
-
-  ovo_movement1.chain(ovo_movement2);
-
-  head_movement.onUpdate(function () {
-      head_rotation = position.p;
-  });
-
-  ovo_movement1.onUpdate(function () {
-      updateRan();
-      ovo_pos = inicio_ovo.p;
-  });
-
-  ovo_movement1.onUpdate(function () {
-      ovo_pos = inicio_ovo.p;
-  });
-
-  head_movement.start();
-  ovo_movement1.start();
-  //ovo_movement2.start();
   // liseners
   window.addEventListener ("resize", onWindowResize);
   window.addEventListener ("mousemove", onMouseMove, true);
@@ -339,7 +299,7 @@ $(function () {
   window.addEventListener ("DOMMouseScroll", onMouseWheel, true); // For Firefox
   
 
-
+  first_camera = true;
   // create a scene, that will hold all our elements such as objects, cameras and lights.
   scene = new Game (renderer.domElement);
   

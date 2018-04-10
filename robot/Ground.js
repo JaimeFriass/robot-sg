@@ -13,10 +13,9 @@ class Ground extends THREE.Object3D {
 
   constructor () {
     super();
+    console.log("PRUEBA");
     this.ground = null;
     //this.raycaster = new THREE.Raycaster ();  // To select boxes
-  
-
     var texture = new THREE.TextureLoader().load( "imgs/pavement.jpg" );
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(50, 50);
@@ -31,26 +30,29 @@ class Ground extends THREE.Object3D {
       0
       //new THREE.MeshPhongMaterial ({color: 0x153249, specular: 0xfbf804, shininess: 70}));
       );
+
+    this.environment = this.createHouses();
+    this.add(this.environment);
+    console.log("ASDASDASDSADSADADS");
     this.ground.applyMatrix (new THREE.Matrix4().makeTranslation (0,-0.1,0));
     this.ground.receiveShadow = true;
     this.ground.autoUpdateMatrix = false;
     this.add (this.ground);
 
-    this.obs1 = this.createObstacles(30, 30, -10);
+    //this.obs1 = this.createObstacles(30, 30, -10);
     /*
     this.obs2 = this.createObstacles(-10, 50, -200);
     this.obs3 = this.createObstacles(140, 75, -160);
     this.obs4 = this.createObstacles(-280, 75, -50);
     */
-    this.add(this.obs1);
+    //this.add(this.obs1);
     /*
     this.add(this.obs2);
     this.add(this.obs3);
     this.add(this.obs4);
     */
 
-    //this.environment = this.createHouses();
-    //this.add(this.environment);
+
   }
 
   createObstacles(posx, posy, posz) {
@@ -74,11 +76,9 @@ class Ground extends THREE.Object3D {
   }
 
   createHouses() {
-
       var houses = new THREE.Object3D();
-
+      console.log("ASDDAS");
       var mtlLoader = new THREE.MTLLoader();
-      mtlLoader.setTexturePath('models/');
       mtlLoader.setPath('models/');
       mtlLoader.load('environment.mtl', function (materials) {
     
@@ -90,10 +90,10 @@ class Ground extends THREE.Object3D {
           objLoader.load('environment.obj', function (object) {
     
               //scene.add(object);
-              object.position.y = -2;
-              object.scale.y = 4;
-              object.scale.x = 4;
-              object.scale.z = 4;
+              object.position.y = -0.5;
+              object.scale.y = 4.7;
+              object.scale.x = 4.7;
+              object.scale.z = 4.7;
               object.rotation.x = -Math.PI / 2;
               //object.rotation.z = -Math.PI / 2;
               //object.position.y = 20;
