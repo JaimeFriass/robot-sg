@@ -20,6 +20,7 @@
     <script type="text/javascript" src="Ovo.js"></script>
     <script type="text/javascript" src="Game.js"></script>
     <script type="text/javascript" src="script.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Gaegu" rel="stylesheet"> 
     <style>
 
         body {
@@ -47,6 +48,22 @@
             background-color: rgb(49, 233, 49);
         }
 
+        #points {
+            position: absolute;
+            left: 500px; top: 13px;
+            color: white;
+            font-family: 'Gaegu', cursive;
+            text-shadow: 1px 1px black;
+            font-size: 20pt
+        }
+
+        #ticks {
+            position: absolute;
+            left:10px; top: 50px;
+            color: white;
+            font-family: 'Gaegu', cursive;
+        }
+
     </style>
 </head>
 <body>
@@ -61,6 +78,9 @@
 <div id="life_bar">
     <div class="progress" id="progress"></div>
 </div>
+
+<div id="points"></div>
+<div id="ticks"></div>
 
 
 

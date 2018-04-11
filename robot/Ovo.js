@@ -4,7 +4,7 @@ class Ovo extends THREE.Object3D {
     constructor(parameters) {
         super();
 
-        this.clase = "OvoBu";
+        this.class = "OvoBu";
         this.mesh_ovo = null;
         this.ovos = new THREE.Object3D();
         this.ovo = this.createOvo();
@@ -87,7 +87,7 @@ class Ovo extends THREE.Object3D {
         return avion;
     }
 
-    iterate() {  
+    iterate() {
         if (this.ovo.position.x < 750)
             this.ovo.position.x = this.ovo.position.x + 2;
 
@@ -96,5 +96,9 @@ class Ovo extends THREE.Object3D {
 
     removeOvo(){
         this.remove(this.ovo);
+    }
+
+    getClass() {
+        return this.class;
     }
 }

@@ -48,7 +48,7 @@ class Game extends Physijs.Scene {
     audioLoader.load( 'models/forest.ogg', function( buffer ) {
         sound.setBuffer( buffer );
         sound.setLoop( true );
-        sound.setVolume( 0.5 );
+        sound.setVolume( 0.7 );
         sound.play();
     }); 
 
@@ -74,6 +74,7 @@ class Game extends Physijs.Scene {
     this.add(this.third_camera);
   }
 
+  getPoints() { return this.robot.getPoints();}
   getPos() { return this.robot.getPos(); }
   getRot() { return this.robot.getRot(); }
   getLookPoint() { return this.robot.getLookPoint();}
@@ -152,7 +153,7 @@ class Game extends Physijs.Scene {
 
   updateOvos() {
       this.ovo.iterate();
-      if (this.ovos.children.length < 2) {
+      if (this.ovos.children.length < 4) {
         var texture = new THREE.TextureLoader().load("imgs/3.png");
         var new_ovo = this.createOvo();
         this.ovos.add(new_ovo);
@@ -164,11 +165,8 @@ class Game extends Physijs.Scene {
               this.ovos.children[i].removeOvo();
               this.ovos.remove(this.ovos.children[i]);
               //this.remove(this.ovos.children[i]);
-              
           }
-          
       }
-
   }
   
   // Public methods
@@ -181,6 +179,7 @@ class Game extends Physijs.Scene {
       //this.robot.setRotHead(controls.rotation);
       this.axis.visible = controls.axis;
       this.streetLight1.intensity = controls.lightIntensity;
+      this.robot.velocity = controls.velocity;
   }
 
   keycontrol(controls) {
@@ -213,10 +212,10 @@ class Game extends Physijs.Scene {
               break;
 
           case 88:
-              this.robot.rotHeadRight();
+              this.robot.rotHeadLeft();
               break;
           case 90:
-              this.robot.rotHeadLeft();
+              this.robot.rotHeadRight();
               break;
 
       }
@@ -225,13 +224,17 @@ class Game extends Physijs.Scene {
 
   updateCollisions() {
       var returned = false;
+      //console.log("HIJOS: " + this.ovos.children.length );
       for (var i = 0; i < this.ovos.children.length; i++) {
         if (typeof this.ovos.children[i] != undefined) {
             if (this.robot.intersectOvo(this.ovos.children[i])) {
+                
+                if (this.ovos.children[i].getClass() == 'OvoBu') {
+                    if (this.robot.life < 97) {
+                        this.robot.life += 3;
+                        this.robot.points += 5;
+                    }
 
-                if (this.robot.children[i].getClass() == 'OvoBu') {
-                    this.robot.life += 5;
-                    console.log("ROBOT BUENO!");
                 } else {
                     this.robot.life -= 1;
                 }

@@ -3,9 +3,7 @@
 
 /// The scene graph
 scene = null;
-
 renderer = null;
-
 
 /// The GUI information
 GUIcontrols = null;
@@ -21,10 +19,8 @@ keypressed = null;
 head_rotation = null;
 ovo_pos = null;
 
-inicio_ovo = null;
-fin_ovo = null;
-
 first_camera = null;
+ticks = null;
 
 /// The current mode of the application
 
@@ -36,14 +32,15 @@ function createGUI (withStats) {
   GUIcontrols = new function() {
     this.axis = true;
     this.lightIntensity = 0.5;
-    //this.rotation = 5;
+    this.velocity = 1;
   }
   
   var gui = new dat.GUI();
   var axisLights = gui.addFolder ('Controles');
     axisLights.add(GUIcontrols, 'axis').name('Axis on/off :');
     axisLights.add(GUIcontrols, 'lightIntensity', 0, 1.0).name('Light intensity :');
-    //axisLights.add(GUIcontrols, 'rotation', 0, 7, 0.1).name('Cabesa: ');
+  var robot = gui.addFolder ('Robot');
+    robot.add(GUIcontrols, 'velocity', 0, 10, 1.0).name('Velocity :');
 
   if (withStats)
     stats = initStats();
@@ -94,7 +91,11 @@ function setLife(life) {
     alert("Yo have lose");
     location.reload(); 
   }
-  
+}
+
+function setPoints(pts) {
+  var points_div = document.getElementById("points");
+  points_div.innerHTML = pts;
 }
 
 /// It processes the clic-down of the mouse
@@ -166,8 +167,6 @@ function onWindowResize () {
 
 
 function onKeyDown(event) {
-    
-    var rotasion = 0;
     event = event || window.event;
     var keycode = event.keyCode;
     //console.log("onKeyDown " + keycode);
@@ -214,9 +213,6 @@ function onKeyUp(event) {
     keypressed = null;
 }
 
-function randomPos(max) {
-        return Math.floor((Math.random() * max) - max/2);
-}
 function draw_collitions(value) {
   if (value) {
     document.getElementById("life_bar").style.backgroundColor = 'red';
@@ -237,11 +233,29 @@ function createRenderer () {
   return renderer;
 }
 
+function updateTicks() {
+  ticks++;
+  document.getElementById("ticks").innerHTML = ticks;
+  if (ticks < 1000) {
+    // DIFICULTAD FACIL
+
+
+  } else if (ticks < 5000) {
+    // DIFICULTAD MEDIA
+    document.getElementById("points").style.color = "orange";
+
+  } else if (ticks < 10000) {
+    // DIFICULTAD DIFICIL
+    document.getElementById("points").style.color = "red";
+  }
+}
+
 ////////////////////////////////////////////////////////////////////
 //////////////////// RENDER ////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 
 function render() {
+  updateTicks();
   requestAnimationFrame(render);
   stats.update();
 
@@ -258,17 +272,11 @@ function render() {
   }
 
   setLife(scene.getRobotLife());
+  setPoints(scene.getPoints());
   draw_collitions(scene.updateCollisions());
  
   position = scene.getPos();
   posicion = scene.getPos();
-  
-  //scene.spotLightRobot.position.x = posicion.x;
-  //scene.spotLightRobot.position.z = posicion.z;
-  //scene.spotLightRobot.target = scene.target;
-  //scene.camera.lookAt(look_point);
-  //scene.target.position.x = posicion.x;
-  //scene.target.position.z = posicion.z;
 
   scene.iterateOvos();
   scene.updateOvos();

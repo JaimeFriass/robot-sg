@@ -51,6 +51,11 @@ class Robot extends THREE.Object3D {
     // Life
     this.life = 100;
 
+    // Points
+    this.points = 0;
+
+    this.velocity = 1;
+
     // TEXTURAS
     this.tex_metal_blanco = new THREE.TextureLoader().load( "imgs/traje.jpg" );
   
@@ -255,11 +260,9 @@ class Robot extends THREE.Object3D {
     this.head = this.createHead();
     this.head.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 35, this.pos_z));
     this.head.geometry.applyMatrix (new THREE.Matrix4().makeRotationY(Math.PI / 2));
-
     chest.add(this.head);
     chest.add(shoulder_left);
     chest.add(shoulder_right);
-    
     return chest;
   }
 
@@ -277,24 +280,7 @@ class Robot extends THREE.Object3D {
     );
                                     
     shoulder.castShadow = true;
-    //shoulder.rotation.z = Math.PI / 2;
     return shoulder;
-  }
-
-  updateCol() {
-    var originPoint = this.robot.position.clone();
-
-    for (var vertexIndex = 0; vertexIndex < this.robot.geometry.vertices.length; vertexIndex++) {
-      var localVertex = this.robot.geometry.vertices[vertexIndex].clone();
-      var globalVertex = localVertex.applyMatrix4(this.robot.matrix);
-      var directionVector = globalVertex.sub(this.robot.position);
-
-      var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize());
-      var collisionsResults = ray.intersectObjects(collidableMeshList);
-      if (collisionsResults.length > 0 && collisionsResults[0].distance < directionVector.length())
-        console.log("ASDDDDDDDDDDDDDD");
-    }
-
   }
 
   intersectOvo(ovo) {
@@ -303,7 +289,7 @@ class Robot extends THREE.Object3D {
     vectorBetweenOvo.subVectors(new THREE.Vector2 (ovo.getPos().x, ovo.getPos().z),
                                 new THREE.Vector2 (this.getPos().x, this.getPos().z));
     //console.log(vectorBetweenOvo.length() < 50);
-    ha_dado = vectorBetweenOvo.length() < 25;
+    ha_dado = vectorBetweenOvo.length() < 27;
     return (ha_dado);
   }
 
@@ -329,7 +315,6 @@ class Robot extends THREE.Object3D {
     prueba.setFromMatrixPosition(this.robot.matrixWorld);
     return prueba;
   }
-  getClass() { return this.class; }
 
   getLookPoint() {
     var vector = new THREE.Vector3();
@@ -337,10 +322,8 @@ class Robot extends THREE.Object3D {
     return vector;
   }
 
-  getRot() {
-    return this.robot.rotation.y;
-  }
-
+  getRot() {return this.robot.rotation.y;}
+  getPoints() {return this.points;}
   getLife() { return this.life; }
   getCamera() { return this.eye_camera;}
   getCameraControls () { return this.trackballControls; }
@@ -360,13 +343,13 @@ class Robot extends THREE.Object3D {
   //                CONTROLES DESDE TECLADO                          //
   // ****************************************************************//
   rotHeadLeft() {
-    if (this.head.rotation.y < (Math.PI / 180)*40) {
+    if (this.head.rotation.y < (Math.PI / 180)*80) {
       this.head.rotation.y = this.head.rotation.y + 0.03;
     }
   }
 
   rotHeadRight() {
-    if (this.head.rotation.y > -(Math.PI / 180)*40) {
+    if (this.head.rotation.y > -(Math.PI / 180)*80) {
       this.head.rotation.y = this.head.rotation.y - 0.03;
     }
   }
@@ -422,14 +405,14 @@ class Robot extends THREE.Object3D {
       this.pos_x = this.pos_x + 2;
       this.life -= 0.1;
       //this.robot.position.x = this.robot.position.x + 0.5;
-      this.robot.translateZ(1);
+      this.robot.translateZ(this.velocity);
   }
 
   walkBack() {
       this.pos_x = this.pos_x - 2;
       this.life -= 0.1;
       //this.robot.position.x = this.robot.position.x - 0.5;
-      this.robot.translateZ(-1);
+      this.robot.translateZ(-this.velocity);
   }
   
 }
