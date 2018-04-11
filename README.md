@@ -13,16 +13,16 @@ Consiste en un juego donde hay que pilotar a un robot evitando las colisiones co
  * Brazos se alargan.
 
 ### Sesión 2
- * Objetos voladores, ~~buenos y malos~~.  :space_invader:
- * ~~Colisiones entre objetos voladores y robot.~~
- * ~~Perdida de energía con colisiones.~~  :battery:
+ * Objetos voladores, buenos y malos.  :space_invader:
+ * Colisiones entre objetos voladores y robot.
+ * Perdida de energía con colisiones.  :battery:
  * Contabilización de puntos.
 
 ### Sesión 3
  * Interacción mediante teclado
  * Texturas en los materiales
  * Fuente de alimentación en el robot  :flashlight:
- * ~~Vista subjetiva~~  :camera:
+ * Vista subjetiva  :camera:
 
 ### Sesión 4
  * ~~Añadido de dificultad conforme el tiempo o puntos.~~  :watch:
