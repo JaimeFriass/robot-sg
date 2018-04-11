@@ -33,6 +33,7 @@ function createGUI (withStats) {
     this.axis = true;
     this.lightIntensity = 0.5;
     this.velocity = 1;
+    this.ovos_in_scene = 4;
   }
   
   var gui = new dat.GUI();
@@ -41,6 +42,8 @@ function createGUI (withStats) {
     axisLights.add(GUIcontrols, 'lightIntensity', 0, 1.0).name('Light intensity :');
   var robot = gui.addFolder ('Robot');
     robot.add(GUIcontrols, 'velocity', 0, 10, 1.0).name('Velocity :');
+  var ovos = gui.addFolder ('Ovos');
+    ovos.add(GUIcontrols, 'ovos_in_scene', 0, 20, 1.0).name('Number: ');
 
   if (withStats)
     stats = initStats();

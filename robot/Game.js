@@ -34,6 +34,7 @@ class Game extends Physijs.Scene {
 
     //this.ovos = this.createOvo();
     this.add(this.ovo);
+    this.ovos_in_scene = 4;
 
     this.fog = new THREE.Fog(0x00000f, 150, 600);
 
@@ -153,7 +154,7 @@ class Game extends Physijs.Scene {
 
   updateOvos() {
       this.ovo.iterate();
-      if (this.ovos.children.length < 4) {
+      if (this.ovos.children.length < this.ovos_in_scene) {
         var texture = new THREE.TextureLoader().load("imgs/3.png");
         var new_ovo = this.createOvo();
         this.ovos.add(new_ovo);
@@ -180,6 +181,7 @@ class Game extends Physijs.Scene {
       this.axis.visible = controls.axis;
       this.streetLight1.intensity = controls.lightIntensity;
       this.robot.velocity = controls.velocity;
+      this.ovos_in_scene = controls.ovos_in_scene;
   }
 
   keycontrol(controls) {

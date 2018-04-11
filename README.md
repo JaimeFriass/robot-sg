@@ -25,5 +25,5 @@ Consiste en un juego donde hay que pilotar a un robot evitando las colisiones co
  * Vista subjetiva  :camera:
 
 ### Sesión 4
- * ~~Añadido de dificultad conforme el tiempo o puntos.~~  :watch:
+ * Añadido de dificultad conforme el tiempo o puntos.  :watch:
  * Mejoras opcionales.

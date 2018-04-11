@@ -289,6 +289,7 @@ class Robot extends THREE.Object3D {
     vectorBetweenOvo.subVectors(new THREE.Vector2 (ovo.getPos().x, ovo.getPos().z),
                                 new THREE.Vector2 (this.getPos().x, this.getPos().z));
     //console.log(vectorBetweenOvo.length() < 50);
+
     ha_dado = vectorBetweenOvo.length() < 27;
     return (ha_dado);
   }
