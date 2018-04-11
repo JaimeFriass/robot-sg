@@ -4,47 +4,42 @@ class Ovo extends THREE.Object3D {
     constructor(parameters) {
         super();
 
-        this.clase = null;
-
+        this.clase = "OvoBu";
+        this.mesh_ovo = null;
+        this.ovos = new THREE.Object3D();
         this.ovo = this.createOvo();
         //this.ovo2 = this.createOvoMod();
-
-        //this.feedBack = new THREE.BoxHelper (this.ovo2, 0xFF0000);
-        //this.feedBack.visible = true;
-        //this.add(this.feedBack);
 
         this.add(this.ovo);
         
     }
 
     createOvo() {
-        var random_pos_x = Math.floor((Math.random() * 600) + 1);
+        var random_pos_z = Math.floor((Math.random() * 500) + 1);
+        var random_pos_x = Math.floor((Math.random() * 200) + 1);
+        var random_class = Math.floor((Math.random() * 10) + 1);
+        var ovo = new THREE.Mesh();
+        //console.log("OVO: Creating ovo - x: "+random_pos_x);
 
-        console.log("OVO: Creating ovo - x: "+random_pos_x);
+        
+        if (random_class > 2) {
+            this.class = "OvoMa";
+            var texture = new THREE.TextureLoader().load("imgs/2.png");
+        } else {
+            this.class = "OvoBu";
+            var texture = new THREE.TextureLoader().load("imgs/3.png");
+        }  
 
-        var texture = new THREE.TextureLoader().load("imgs/3.png");
-        var ovo_material = Physijs.createMaterial(
-            new THREE.MeshPhongMaterial({ map: texture }),
-            .6,
-            .3
-        );
-
-        var ovo1 = new Physijs.BoxMesh(
-            new THREE.BoxGeometry(30, 30, 30),
-            ovo_material,
-            3
-        );
-
-        /*
-        var ovo = new THREE.Mesh(
-            new THREE.TorusBufferGeometry( 8, 4, 18, 100 ),
+        this.mesh_ovo = new THREE.Mesh(
+            new THREE.BoxBufferGeometry( 20, 20, 18 ),
             new THREE.MeshPhongMaterial({ map: texture }));
-        */
-       ovo1.receiveShadow = true;
-       ovo1.castShadow = true;
-
-        ovo1.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(30, 30, -300 + random_pos_x));
-        return ovo1;
+        this.mesh_ovo.receiveShadow = true;
+        this.mesh_ovo.castShadow = true;
+        ovo.add(this.mesh_ovo);
+        ovo.position.set(-400 + random_pos_x, 30, -250 + random_pos_z);
+        //ovo.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(-400 + random_pos_x, 60, -300 + random_pos_z));
+        return ovo;
+        
     }
 
     getPos() {
@@ -92,13 +87,14 @@ class Ovo extends THREE.Object3D {
         return avion;
     }
 
-    iterate() {   
-        if (this.ovo.position.x < 400)
+    iterate() {  
+        if (this.ovo.position.x < 750)
             this.ovo.position.x = this.ovo.position.x + 2;
 
+        this.ovo.rotation.y = (this.ovo.rotation.y + 0.09) % 4;
     }
 
-    getPos() {
-        return this.ovo.position;
+    removeOvo(){
+        this.remove(this.ovo);
     }
 }

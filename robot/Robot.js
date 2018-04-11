@@ -20,7 +20,7 @@ class Robot extends THREE.Object3D {
     this.robotWidth  = (parameters.robotWidth === undefined ? 45 : parameters.robotWidth);
     var texturaa = new THREE.TextureLoader().load( "imgs/1.png" );
     this.material    = (parameters.material === undefined ? new THREE.MeshPhongMaterial ({map: texturaa}) : parameters.material);
-          
+    
     this.mat = Physijs.createMaterial(
       new THREE.MeshBasicMaterial({color: 0xff8888}),
       0.8,
@@ -42,6 +42,7 @@ class Robot extends THREE.Object3D {
     this.left_leg = null;
     this.right_leg = null;
     this.look_point = null;
+    this.spotLightHead = null;
 
     this.viewpoint = null;
     this.eye_camera = null;
@@ -188,6 +189,7 @@ class Robot extends THREE.Object3D {
     eye.castShadow = true;
 
 
+
     this.viewpoint = new Physijs.SphereMesh(new THREE.SphereGeometry(0.5, 50, 50), 0);
     this.viewpoint.position.set(0, -4, 50);
     this.eye_camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -196,6 +198,23 @@ class Robot extends THREE.Object3D {
     
     this.eye_camera.position.set(0, 40, 9);
 
+    
+    this.spotLightHead = new THREE.SpotLight( 0xffffff);
+    this.spotLightHead.position.set(0,43, 15);
+  
+    this.spotLightHead.castShadow = true;
+    this.spotLightHead.target = this.viewpoint;
+    this.spotLightHead.penumbra = 0.4;
+    this.spotLightHead.intensity = 0.5;
+    /*
+    this.spotLightHead.shadow.mapSize.width=512;
+    this.spotLightHead.shadow.mapSize.height=512;
+    
+    this.spotLightHead.intensity = 0.5;
+    this.spotLightHead.target = this.viewpoint.position;
+    */
+
+    skull.add(this.spotLightHead);
     skull.add(this.eye_camera);
     skull.add(this.viewpoint);
     
@@ -284,7 +303,7 @@ class Robot extends THREE.Object3D {
     vectorBetweenOvo.subVectors(new THREE.Vector2 (ovo.getPos().x, ovo.getPos().z),
                                 new THREE.Vector2 (this.getPos().x, this.getPos().z));
     //console.log(vectorBetweenOvo.length() < 50);
-    ha_dado = vectorBetweenOvo.length() < 20;
+    ha_dado = vectorBetweenOvo.length() < 25;
     return (ha_dado);
   }
 
@@ -310,6 +329,7 @@ class Robot extends THREE.Object3D {
     prueba.setFromMatrixPosition(this.robot.matrixWorld);
     return prueba;
   }
+  getClass() { return this.class; }
 
   getLookPoint() {
     var vector = new THREE.Vector3();
@@ -399,13 +419,15 @@ class Robot extends THREE.Object3D {
   }
 
   walkForward() {
-      this.pos_x = this.pos_x + 1;
+      this.pos_x = this.pos_x + 2;
+      this.life -= 0.1;
       //this.robot.position.x = this.robot.position.x + 0.5;
       this.robot.translateZ(1);
   }
 
   walkBack() {
-      this.pos_x = this.pos_x - 1;
+      this.pos_x = this.pos_x - 2;
+      this.life -= 0.1;
       //this.robot.position.x = this.robot.position.x - 0.5;
       this.robot.translateZ(-1);
   }

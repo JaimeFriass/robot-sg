@@ -80,7 +80,8 @@ function setMessage (str) {
 function setLife(life) {
   //document.getElementById ("Life").innerHTML = "<h3>"+life+"</h3>";
   var progress = document.getElementById("progress");
-  progress.innerHTML = life + ' %';
+  
+  progress.innerHTML = Math.round(life) + ' %';
   progress.style.width = life + '%';
   if (life > 25 && life < 55) {
     progress.style.backgroundColor = "rgb(205, 248, 49)";
@@ -236,7 +237,10 @@ function createRenderer () {
   return renderer;
 }
 
-/// It renders every frame
+////////////////////////////////////////////////////////////////////
+//////////////////// RENDER ////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+
 function render() {
   requestAnimationFrame(render);
   stats.update();
@@ -254,17 +258,17 @@ function render() {
   }
 
   setLife(scene.getRobotLife());
-  //draw_collitions(scene.updateCollisions());
+  draw_collitions(scene.updateCollisions());
  
   position = scene.getPos();
   posicion = scene.getPos();
   
-  scene.spotLightRobot.position.x = posicion.x;
-  scene.spotLightRobot.position.z = posicion.z;
-  scene.spotLightRobot.target = scene.target;
+  //scene.spotLightRobot.position.x = posicion.x;
+  //scene.spotLightRobot.position.z = posicion.z;
+  //scene.spotLightRobot.target = scene.target;
   //scene.camera.lookAt(look_point);
-  scene.target.position.x = posicion.x;
-  scene.target.position.z = posicion.z;
+  //scene.target.position.x = posicion.x;
+  //scene.target.position.z = posicion.z;
 
   scene.iterateOvos();
   scene.updateOvos();

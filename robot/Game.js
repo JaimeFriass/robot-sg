@@ -11,14 +11,15 @@ class Game extends Physijs.Scene {
     // Attributes
     
     this.ambientLight = null;
-    this.spotLight = null;
+    this.streetLight1 = null;
+    this.streetLight2 = null;
     this.spotLightRobot = null;
     this.third_camera = null;
     this.trackballControlsFP = null;
     this.trackballControls = null;
     this.robot = null;
     this.ground = null;
-    this.ovo = null;
+    this.ovo = this.createOvo();
     this.ovos = new THREE.Object3D();
     this.add(this.ovos);
     this.target = null;
@@ -32,9 +33,24 @@ class Game extends Physijs.Scene {
     this.createCamera (renderer);
 
     //this.ovos = this.createOvo();
-    //this.add(this.ovos);
+    this.add(this.ovo);
 
-    this.fog = new THREE.Fog(0xfffff3, 100, 600);
+    this.fog = new THREE.Fog(0x00000f, 150, 600);
+
+    var listener = new THREE.AudioListener();
+    this.robot.getCamera().add( listener );
+
+    // create a global audio source
+    var sound = new THREE.Audio( listener );
+
+    // load a sound and set it as the Audio object's buffer
+    var audioLoader = new THREE.AudioLoader();
+    audioLoader.load( 'models/forest.ogg', function( buffer ) {
+        sound.setBuffer( buffer );
+        sound.setLoop( true );
+        sound.setVolume( 0.5 );
+        sound.play();
+    }); 
 
     this.fixedTimeStep =  1 / 120;
   }
@@ -71,25 +87,46 @@ class Game extends Physijs.Scene {
     this.add (this.ambientLight);
     
     // add spotlight for the shadows
-    this.spotLight = new THREE.SpotLight( 0xffffff );
-    this.spotLight.position.set( 60, 60, 40 );
-    this.spotLight.castShadow = true;
+    this.streetLight1 = new THREE.SpotLight( 0xfbd63f );
+    this.streetLight1.position.set(-335,85, -285);
+    this.streetLight1.castShadow = true;
+    this.target = new THREE.Object3D(-335, 20, -285);
+    this.streetLight1.target = this.target;
+    this.streetLight1.target.position.set(-335, 20, -285);
+    this.streetLight1.penumbra = 0.4;
+    this.streetLight1.intensity = 1;
     // the shadow resolution
-    this.spotLight.shadow.mapSize.width=2048
-    this.spotLight.shadow.mapSize.height=2048;
-    this.add (this.spotLight);
+    this.streetLight1.shadow.mapSize.width=2048
+    this.streetLight1.shadow.mapSize.height=2048;
+    this.add (this.streetLight1);
 
-    this.spotLightRobot = new THREE.SpotLight( 0xffffff);
-    this.spotLightRobot.position.set(0,65, 0);
-    this.spotLightRobot.castShadow = true;
-    this.spotLightRobot.shadow.mapSize.width=512;
-    this.spotLightRobot.shadow.mapSize.height=512;
-    this.spotLightRobot.penumbra = 0.4;
-    this.spotLightRobot.intensity = 0.5;
-    this.target = new THREE.Object3D( 0, 30, 0 );
+    // add spotlight for the shadows
+    this.streetLight2 = new THREE.SpotLight( 0xfbd63f );
+    this.streetLight2.position.set(238,85, 177);
+    this.streetLight2.castShadow = true;
+    this.target = new THREE.Object3D(-335, 20, -285);
+    this.streetLight2.target = this.target;
+    this.streetLight2.target.position.set(238, 20, 177);
+    this.streetLight2.penumbra = 0.4;
+    this.streetLight2.intensity = 1;
+    // the shadow resolution
+    this.streetLight2.shadow.mapSize.width=2048
+    this.streetLight2.shadow.mapSize.height=2048;
+    this.add (this.streetLight2);
+    //this.spotLightRobot = new THREE.SpotLight( 0xffffff);
+    //this.spotLightRobot.position.set(0,65, 0);
+    //this.spotLightRobot.castShadow = true;
+    //this.spotLightRobot.shadow.mapSize.width=512;
+    //this.spotLightRobot.shadow.mapSize.height=512;
+    //this.spotLightRobot.penumbra = 0.4;
+    //this.spotLightRobot.intensity = 0.5;
+    
+    this.background = new THREE.Color(0x00000f);
     this.add(this.target);
+
+
     //this.spotLightRobot.target = new THREE.Vector3(0, 30, 0);
-    this.add(this.spotLightRobot);
+    //this.add(this.spotLightRobot);
   }
   
   /// It creates the geometric model: robot and ground
@@ -114,18 +151,24 @@ class Game extends Physijs.Scene {
   }
 
   updateOvos() {
-      
+      this.ovo.iterate();
+      if (this.ovos.children.length < 2) {
+        var texture = new THREE.TextureLoader().load("imgs/3.png");
+        var new_ovo = this.createOvo();
+        this.ovos.add(new_ovo);
+        }
       for (var i = 0; i < this.ovos.children.length; i++) {
-          if (this.ovos.children[i].getPos().x == 400) {
-              this.remove(this.ovos.children[i]);
+            this.ovos.children[i].iterate();
+          if (this.ovos.children[i].getPos().x > 700) {
+            //console.log("Hijo eliminado en "+this.ovos.children[i].getPos().x+" Hijos restantes: "+this.ovos.children.length);
+              this.ovos.children[i].removeOvo();
+              this.ovos.remove(this.ovos.children[i]);
+              //this.remove(this.ovos.children[i]);
+              
           }
-          this.ovos.children[i].iterate();
+          
       }
-      if (this.ovos.children.length < 4) {
-          var texture = new THREE.TextureLoader().load("imgs/3.png");
-          var new_ovo = this.createOvo();
-          this.ovos.add(new_ovo);
-      }
+
   }
   
   // Public methods
@@ -137,7 +180,7 @@ class Game extends Physijs.Scene {
   animate (controls) {
       //this.robot.setRotHead(controls.rotation);
       this.axis.visible = controls.axis;
-      this.spotLight.intensity = controls.lightIntensity;
+      this.streetLight1.intensity = controls.lightIntensity;
   }
 
   keycontrol(controls) {
@@ -182,11 +225,22 @@ class Game extends Physijs.Scene {
 
   updateCollisions() {
       var returned = false;
-      if (this.robot.intersectOvo(this.ovo)) {
-          this.robot.life -= 1;
-          returned = true;
-      }
-      return returned;
+      for (var i = 0; i < this.ovos.children.length; i++) {
+        if (typeof this.ovos.children[i] != undefined) {
+            if (this.robot.intersectOvo(this.ovos.children[i])) {
+
+                if (this.robot.children[i].getClass() == 'OvoBu') {
+                    this.robot.life += 5;
+                    console.log("ROBOT BUENO!");
+                } else {
+                    this.robot.life -= 1;
+                }
+                returned = true;
+            }
+        }
+        
+    }
+    return returned;
   }
 
   getCamera (first_camera) { 
