@@ -42,8 +42,11 @@ class Robot extends THREE.Object3D {
     this.left_leg = null;
     this.right_leg = null;
     this.look_point = null;
+
+    // Light of the robot
     this.spotLightHead = null;
 
+    // First camera
     this.viewpoint = null;
     this.eye_camera = null;
     this.trackballControls = null;
@@ -54,6 +57,7 @@ class Robot extends THREE.Object3D {
     // Points
     this.points = 0;
 
+    // Velocity of the robot
     this.velocity = 1;
 
     // TEXTURAS
@@ -67,12 +71,10 @@ class Robot extends THREE.Object3D {
     //this.feedBack.visible = false;
     //this.add (this.feedBack);
     this.add (this.robot);
-    
-
   }
   
   // Private methods
-  
+
   createRobot() {
     var robot = new THREE.Mesh();
 
@@ -92,7 +94,6 @@ class Robot extends THREE.Object3D {
     this.body.geometry.applyMatrix (new THREE.Matrix4().makeRotationX (0));
     this.body.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (0, -29, 0));
     
-
     // Trasladamos el cuerpo al eje para poder rotarse
     this.body.position.y = -28;
 
@@ -100,8 +101,7 @@ class Robot extends THREE.Object3D {
     this.mesh = new THREE.Object3D();
     this.mesh.add(this.body);
     this.mesh.position.y = 28;
-    //this.mesh.translateOnAxis (new THREE.Vector3(0, 1, 0), -15);
-    
+
     robot.add(this.mesh);
     robot.add(this.left_leg);
     robot.add(this.right_leg);
@@ -113,14 +113,6 @@ class Robot extends THREE.Object3D {
     // Let position & rotation to be updated
     robot.__dirtyPosition = true;
     robot.__dirtyRotation = true;
-
-    //robot.setLinearVelocity(new THREE.Vector3(0, 0, 0));
-    //robot.setAngularVelocity(new THREE.Vector3(0, 0, 0));
-
-    robot.addEventListener( 'collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
-      // `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
-      console.log(other_object);
-    });
 
     robot.position.y = 4;
     robot.updateMatrix();
@@ -289,7 +281,6 @@ class Robot extends THREE.Object3D {
     vectorBetweenOvo.subVectors(new THREE.Vector2 (ovo.getPos().x, ovo.getPos().z),
                                 new THREE.Vector2 (this.getPos().x, this.getPos().z));
     //console.log(vectorBetweenOvo.length() < 50);
-
     ha_dado = vectorBetweenOvo.length() < 27;
     return (ha_dado);
   }
@@ -328,7 +319,7 @@ class Robot extends THREE.Object3D {
   getLife() { return this.life; }
   getCamera() { return this.eye_camera;}
   getCameraControls () { return this.trackballControls; }
-  disableCamera() {this.eye_camera.enabled = false;}
+  //disableCamera() {this.eye_camera.enabled = false;}
 
   setCameraAspect (anAspectRatio) {
     this.eye_camera.aspect = anAspectRatio;
@@ -340,6 +331,7 @@ class Robot extends THREE.Object3D {
   //                CONTROLES DESDE TECLADO                          //
   // ****************************************************************//
   rotHeadLeft() {
+    // 80º limit
     if (this.head.rotation.y < (Math.PI / 180)*80) {
       this.head.rotation.y = this.head.rotation.y + 0.03;
     }
@@ -352,6 +344,7 @@ class Robot extends THREE.Object3D {
   }
 
   rotBodyForward() {
+      // 30º limit
       if (this.rotBody < (Math.PI / 180)*20 ) {
         this.rotBody = this.rotBody + 0.04;
         this.mesh.rotation.x = this.rotBody;
@@ -362,6 +355,7 @@ class Robot extends THREE.Object3D {
   }
 
   rotBodyBack() {
+      // 45º limit
       if (this.rotBody >  -( Math.PI / 180 )*30) {
         this.rotBody = this.rotBody - 0.04;
         this.mesh.rotation.x = this.rotBody;
@@ -385,7 +379,6 @@ class Robot extends THREE.Object3D {
       this.left_leg.scale.y = this.left_leg.scale.y - 0.01;
       this.mesh.position.y = this.mesh.position.y - 0.3;
     }
-    
   }
 
   turnLeft() {
@@ -399,21 +392,13 @@ class Robot extends THREE.Object3D {
   }
 
   walkForward() {
-      this.pos_x = this.pos_x + 2;
       this.life -= 0.1;
-      //this.robot.position.x = this.robot.position.x + 0.5;
       this.robot.translateZ(this.velocity);
   }
 
   walkBack() {
-      this.pos_x = this.pos_x - 2;
       this.life -= 0.1;
-      //this.robot.position.x = this.robot.position.x - 0.5;
       this.robot.translateZ(-this.velocity);
   }
   
 }
-
-// class variables
-Robot.WORLD = 0;
-Robot.LOCAL = 1;

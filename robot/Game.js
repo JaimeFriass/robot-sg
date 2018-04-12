@@ -10,12 +10,14 @@ class Game extends Physijs.Scene {
     
     // Attributes
     
+    // Lights
     this.ambientLight = null;
     this.streetLight1 = null;
     this.streetLight2 = null;
     this.spotLightRobot = null;
+
+    this.environment_loaded = false;
     this.third_camera = null;
-    this.trackballControlsFP = null;
     this.trackballControls = null;
     this.robot = null;
     this.ground = null;
@@ -23,29 +25,23 @@ class Game extends Physijs.Scene {
     this.ovos = new THREE.Object3D();
     this.add(this.ovos);
     this.target = null;
-    this.environment_loaded = false;
-  
     this.createLights ();
-    
     this.axis = new THREE.AxisHelper (25);
     this.add (this.axis);
     this.model = this.createModel ();
     this.add(this.model);
     this.createCamera (renderer);
 
-    //this.ovos = this.createOvo();
+    // Ovos
     this.add(this.ovo);
     this.ovos_in_scene = 4;
 
     this.fog = new THREE.Fog(0x00000f, 150, 600);
 
+    // Audio in scene
     var listener = new THREE.AudioListener();
     this.robot.getCamera().add( listener );
-
-    // create a global audio source
     var sound = new THREE.Audio( listener );
-
-    // load a sound and set it as the Audio object's buffer
     var audioLoader = new THREE.AudioLoader();
     audioLoader.load( 'models/forest.ogg', function( buffer ) {
         sound.setBuffer( buffer );
@@ -54,7 +50,7 @@ class Game extends Physijs.Scene {
         sound.play();
     }); 
 
-    this.fixedTimeStep =  1 / 120;
+    //this.fixedTimeStep =  1 / 120;
   }
   
   /// It creates the camera and adds it to the graph
@@ -150,17 +146,14 @@ class Game extends Physijs.Scene {
   updateOvos() {
       this.ovo.iterate();
       if (this.ovos.children.length < this.ovos_in_scene) {
-        var texture = new THREE.TextureLoader().load("imgs/3.png");
         var new_ovo = this.createOvo();
         this.ovos.add(new_ovo);
-        }
+      }
       for (var i = 0; i < this.ovos.children.length; i++) {
             this.ovos.children[i].iterate();
           if (this.ovos.children[i].getPos().x > 700) {
-            //console.log("Hijo eliminado en "+this.ovos.children[i].getPos().x+" Hijos restantes: "+this.ovos.children.length);
               this.ovos.children[i].removeOvo();
               this.ovos.remove(this.ovos.children[i]);
-              //this.remove(this.ovos.children[i]);
           }
       }
   }
@@ -172,7 +165,6 @@ class Game extends Physijs.Scene {
    * @controls - The GUI information
    */
   animate (controls) {
-      //this.robot.setRotHead(controls.rotation);
       this.axis.visible = controls.axis;
       this.streetLight1.intensity = controls.lightIntensity;
       this.robot.velocity = controls.velocity;
@@ -221,19 +213,18 @@ class Game extends Physijs.Scene {
 
   updateCollisions() {
       var returned = false;
-      //console.log("HIJOS: " + this.ovos.children.length );
       for (var i = 0; i < this.ovos.children.length; i++) {
         if (typeof this.ovos.children[i] != undefined) {
             if (this.robot.intersectOvo(this.ovos.children[i])) {
                 
                 if (this.ovos.children[i].getClass() == 'OvoBu') {
                     if (this.robot.life < 97) {
-                        this.robot.life += 3;
+                        this.robot.life += 1;
                         this.robot.points += 5;
                     }
 
                 } else {
-                    this.robot.life -= 1;
+                    this.robot.life -= 0.5;
                 }
                 returned = true;
             }
@@ -273,7 +264,7 @@ class Game extends Physijs.Scene {
       switch (num) {
           case 1:
             this.ovos_in_scene = 3;
-            this.ovos.velocity = 4;
+            this.ovos.velocity = 2;
             break;
           case 2:
             this.ovos_in_scene = 4;
@@ -286,19 +277,3 @@ class Game extends Physijs.Scene {
       }
   }
 }
-
-  // class variables
-  
-  // Application modes
-  Game.NO_ACTION = 0;
-  Game.ADDING_BOXES = 1;
-  Game.MOVING_BOXES = 2;
-  
-  // Actions
-  Game.NEW_BOX = 0;
-  Game.MOVE_BOX = 1;
-  Game.SELECT_BOX = 2;
-  Game.ROTATE_BOX = 3;
-  Game.END_ACTION = 10;
-
-

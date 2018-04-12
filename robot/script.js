@@ -11,7 +11,7 @@ GUIcontrols = null;
 /// The object for the statistics
 stats = null;
 
-/// A boolean to know if the left button of the mouse is down
+/// A boolean to know if the left button of the mouse is pressed
 mouseDown = false;
 
 /// Key to send
@@ -84,6 +84,7 @@ function setMessage (str) {
   document.getElementById ("Messages").innerHTML = "<h2>"+str+"</h2>";
 }
 
+// LIFE
 function setLife(life) {
   //document.getElementById ("Life").innerHTML = "<h3>"+life+"</h3>";
   var progress = document.getElementById("progress");
@@ -98,15 +99,18 @@ function setLife(life) {
   }
 
   if (life <= 0) {
-    alert("Yo have lose");
+    alert("You died. Try again you loser >:D nigger");
     location.reload(); 
   }
 }
 
+// POINTS
 function setPoints(pts) {
   var points_div = document.getElementById("points");
   points_div.innerHTML = pts;
 }
+
+// LOADING FUNCTIONS
 
 function loading() {
   document.getElementById("loading").style.display = "block";
@@ -236,8 +240,6 @@ function onKeyDown(event) {
 }
 
 function onKeyUp(event) {
-    //window.removeEventListener("keydown", onKeyDown, false);
-    //console.log("onKeyUp");
     keypressed = null;
 }
 
@@ -295,10 +297,7 @@ function render() {
     }
   }
 
-  if (active_menu) {
-    console.log("MENU ACTIVO DESDE RENDER");
-  } else {
-
+  if (!active_menu) {
     stats.update();
 
     if (false) {
@@ -308,7 +307,6 @@ function render() {
     }
 
     scene.animate(GUIcontrols);
-
     setLife(scene.getRobotLife());
     setPoints(scene.getPoints());
     draw_collitions(scene.updateCollisions());
@@ -317,33 +315,29 @@ function render() {
     if (keypressed != null) {
       scene.keycontrol(keypressed);
     }
-    position = scene.getPos();
+
     posicion = scene.getPos();
+    if (posicion.x == 1000 || posicion.x == -1000 || 
+        posicion.z == 1000 || posicion.z == -1000)
+        finishGame();
+
     updateTicks();
     scene.iterateOvos();
     scene.updateOvos();
   }
 
-
   requestAnimationFrame(render);
   renderer.render(scene, scene.getCamera(first_camera));
-  scene.simulate();
 }
-
 
 /// The main function
 $(function () {
-  'use strict';
-  // Web worker that configures the threads
-  Physijs.scripts.worker = 'js/physijs_worker.js';
-  // Physics motor
-  Physijs.scripts.ammo = 'ammo.js';
   // create a render and set the size
   renderer = createRenderer();
   // add the output of the renderer to the html element
   $("#WebGL-output").append(renderer.domElement);
 
-  // liseners
+  // listeners
   window.addEventListener ("resize", onWindowResize);
   window.addEventListener ("mousemove", onMouseMove, true);
   window.addEventListener ("mousedown", onMouseDown, true);

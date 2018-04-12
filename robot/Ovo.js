@@ -32,7 +32,7 @@ class Ovo extends THREE.Object3D {
         }  
 
         this.mesh_ovo = new THREE.Mesh(
-            new THREE.BoxBufferGeometry( 20, 20, 18 ),
+            new THREE.DodecahedronBufferGeometry(15, 1),
             new THREE.MeshPhongMaterial({ map: texture }));
         this.mesh_ovo.receiveShadow = true;
         this.mesh_ovo.castShadow = true;
