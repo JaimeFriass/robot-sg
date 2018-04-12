@@ -14,13 +14,20 @@ stats = null;
 /// A boolean to know if the left button of the mouse is down
 mouseDown = false;
 
-/// Tecla a enviar
+/// Key to send
 keypressed = null;
-head_rotation = null;
-ovo_pos = null;
 
+// First camera active
 first_camera = null;
+
+// Pause menu active
+active_menu = null;
+
+// Current ticks
 ticks = null;
+
+// Environment loaded
+environment_loaded = null;
 
 /// The current mode of the application
 
@@ -101,6 +108,15 @@ function setPoints(pts) {
   points_div.innerHTML = pts;
 }
 
+function loading() {
+  document.getElementById("loading").style.display = "block";
+}
+
+function stopLoading() {
+  document.getElementById("loading").style.display = "none";
+  console.log("STOP LOADING");
+}
+
 /// It processes the clic-down of the mouse
 /**
  * @param event - Mouse information
@@ -120,7 +136,6 @@ function onMouseDown (event) {
 function onMouseMove (event) {
 
 }
-
 /// It processes the clic-up of the mouse
 /**
  * @param event - Mouse information
@@ -203,6 +218,16 @@ function onKeyDown(event) {
         case 90: // X
             keypressed = 88;
             break;
+
+        case 32: // SPACE BAR
+            if (!active_menu) {
+              active_menu = true;
+              document.getElementById("menu").style.display = "block";
+            } else if (active_menu) {
+              active_menu = false;
+              document.getElementById("menu").style.display = "none";
+            }
+            break;
         default:
             keypressed = keycode;
             //console.log("Tecla pulsada: " + keypressed);
@@ -241,15 +266,20 @@ function updateTicks() {
   document.getElementById("ticks").innerHTML = ticks;
   if (ticks < 1000) {
     // DIFICULTAD FACIL
-
+    document.getElementById("dificulty_div").style.color = "white";
 
   } else if (ticks < 5000) {
     // DIFICULTAD MEDIA
     document.getElementById("points").style.color = "orange";
-
-  } else if (ticks < 10000) {
+    document.getElementById("dificulty_div").style.color = "orange";
+    document.getElementById("dificulty_div").innerHTML = "Dificultad: MEDIA";
+    scene.setDificulty(2);
+  } else  {
     // DIFICULTAD DIFICIL
     document.getElementById("points").style.color = "red";
+    document.getElementById("dificulty_div").style.color = "red";
+    document.getElementById("dificulty_div").innerHTML = "Dificultad: ALTA";
+    scene.setDificulty(3);
   }
 }
 
@@ -258,33 +288,44 @@ function updateTicks() {
 ////////////////////////////////////////////////////////////////////
 
 function render() {
-  updateTicks();
-  requestAnimationFrame(render);
-  stats.update();
+  if (!environment_loaded) {
+    if (!scene.getLoadStatus()) loading();
+    else {
+      environment_loaded = true; stopLoading();
+    }
+  }
 
-  if (false) {
-    scene.getCameraControls(true).update ();
+  if (active_menu) {
+    console.log("MENU ACTIVO DESDE RENDER");
   } else {
-    scene.getCameraControls(false).update ();
-  }
 
-  scene.animate(GUIcontrols);
+    stats.update();
 
-  if (keypressed != null) {
+    if (false) {
+      scene.getCameraControls(true).update ();
+    } else {
+      scene.getCameraControls(false).update ();
+    }
+
+    scene.animate(GUIcontrols);
+
+    setLife(scene.getRobotLife());
+    setPoints(scene.getPoints());
+    draw_collitions(scene.updateCollisions());
+
+    // Key Controls
+    if (keypressed != null) {
       scene.keycontrol(keypressed);
+    }
+    position = scene.getPos();
+    posicion = scene.getPos();
+    updateTicks();
+    scene.iterateOvos();
+    scene.updateOvos();
   }
 
-  setLife(scene.getRobotLife());
-  setPoints(scene.getPoints());
-  draw_collitions(scene.updateCollisions());
- 
-  position = scene.getPos();
-  posicion = scene.getPos();
 
-  scene.iterateOvos();
-  scene.updateOvos();
-
-  TWEEN.update();
+  requestAnimationFrame(render);
   renderer.render(scene, scene.getCamera(first_camera));
   scene.simulate();
 }
@@ -312,26 +353,21 @@ $(function () {
   window.addEventListener("keyup", onKeyUp, false);
   window.addEventListener ("mousewheel", onMouseWheel, true);   // For Chrome an others
   window.addEventListener ("DOMMouseScroll", onMouseWheel, true); // For Firefox
-  
+  document.getElementById("cerrar").addEventListener("click", function(){
+      if (active_menu) {
+        document.getElementById("menu").style.display = "none";
+        active_menu = false;
+        console.log("PULSADO BOTON PARA CERRAR");
+      } else
+        document.getElementById("menu").style.display = "block";
+        active_menu = true;
+    });
 
   first_camera = true;
+  active_menu = false;
+  environment_loaded = false;
   // create a scene, that will hold all our elements such as objects, cameras and lights.
   scene = new Game (renderer.domElement);
-  
-  scene.setGravity(new THREE.Vector3( 1, -50, 0 ));
-
-  scene.addEventListener('update',
-    function() {
-      scene.simulate( undefined, 1 );
-    }
-  );		
-  
-  scene.addEventListener(
-    'update',
-    function() {
-      scene.simulate( undefined, 2 );
-    }
-  );
 
   createGUI(true);
 

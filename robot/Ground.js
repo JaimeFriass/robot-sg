@@ -12,8 +12,9 @@
 class Ground extends THREE.Object3D {
 
   constructor () {
+    
     super();
-    console.log("PRUEBA");
+    this.loaded = false;
     this.ground = null;
     //this.raycaster = new THREE.Raycaster ();  // To select boxes
     var texture = new THREE.TextureLoader().load( "imgs/pavement.jpg" );
@@ -32,27 +33,12 @@ class Ground extends THREE.Object3D {
       );
 
     this.environment = this.createHouses();
+    this.loaded = true;
     this.add(this.environment);
-    console.log("ASDASDASDSADSADADS");
     this.ground.applyMatrix (new THREE.Matrix4().makeTranslation (0,-0.1,0));
     this.ground.receiveShadow = true;
     this.ground.autoUpdateMatrix = false;
     this.add (this.ground);
-
-    //this.obs1 = this.createObstacles(30, 30, -10);
-    /*
-    this.obs2 = this.createObstacles(-10, 50, -200);
-    this.obs3 = this.createObstacles(140, 75, -160);
-    this.obs4 = this.createObstacles(-280, 75, -50);
-    */
-    //this.add(this.obs1);
-    /*
-    this.add(this.obs2);
-    this.add(this.obs3);
-    this.add(this.obs4);
-    */
-
-
   }
 
   createObstacles(posx, posy, posz) {
@@ -87,9 +73,9 @@ class Ground extends THREE.Object3D {
           var objLoader = new THREE.OBJLoader();
           objLoader.setMaterials(materials);
           objLoader.setPath('models/');
-          objLoader.load('environment.obj', function (object) {
-    
-              //scene.add(object);
+          objLoader.load('environment.obj', 
+          
+          function (object) {
               object.position.y = -0.5;
               object.scale.y = 4.7;
               object.scale.x = 4.7;
@@ -98,7 +84,7 @@ class Ground extends THREE.Object3D {
               //object.rotation.z = -Math.PI / 2;
               //object.position.y = 20;
               object.castShadow = true;
-    
+
               houses.add(object);
     
           });
@@ -106,6 +92,7 @@ class Ground extends THREE.Object3D {
       });
       return houses;
   }
+  
   
   
   /// It returns the position of the mouse in normalized coordinates ([-1,1],[-1,1])

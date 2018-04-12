@@ -7,6 +7,7 @@ class Ovo extends THREE.Object3D {
         this.class = "OvoBu";
         this.mesh_ovo = null;
         this.ovos = new THREE.Object3D();
+        this.velocity = 3;
         this.ovo = this.createOvo();
         //this.ovo2 = this.createOvoMod();
 
@@ -89,7 +90,7 @@ class Ovo extends THREE.Object3D {
 
     iterate() {
         if (this.ovo.position.x < 750)
-            this.ovo.position.x = this.ovo.position.x + 2;
+            this.ovo.position.x = this.ovo.position.x + this.velocity;
 
         this.ovo.rotation.y = (this.ovo.rotation.y + 0.09) % 4;
     }

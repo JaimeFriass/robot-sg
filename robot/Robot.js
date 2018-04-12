@@ -330,13 +330,9 @@ class Robot extends THREE.Object3D {
   getCameraControls () { return this.trackballControls; }
   disableCamera() {this.eye_camera.enabled = false;}
 
-  rotar(girar) {
-      if (girar)
-          this.rotHead = this.rotHead + 0.05;
-      else
-          this.rotHead = this.rotHead - 0.05;
-
-      this.head.rotation.y = this.rotHead;
+  setCameraAspect (anAspectRatio) {
+    this.eye_camera.aspect = anAspectRatio;
+    this.eye_camera.updateProjectionMatrix();
   }
 
 

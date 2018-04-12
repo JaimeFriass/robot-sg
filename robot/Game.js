@@ -23,6 +23,7 @@ class Game extends Physijs.Scene {
     this.ovos = new THREE.Object3D();
     this.add(this.ovos);
     this.target = null;
+    this.environment_loaded = false;
   
     this.createLights ();
     
@@ -71,7 +72,6 @@ class Game extends Physijs.Scene {
     this.trackballControlsFP.panSpeed = 0.5;
     this.trackballControlsFP.minDistance = 40;
     this.trackballControlsFP.target = look;
-    
     this.add(this.third_camera);
   }
 
@@ -115,13 +115,6 @@ class Game extends Physijs.Scene {
     this.streetLight2.shadow.mapSize.width=2048
     this.streetLight2.shadow.mapSize.height=2048;
     this.add (this.streetLight2);
-    //this.spotLightRobot = new THREE.SpotLight( 0xffffff);
-    //this.spotLightRobot.position.set(0,65, 0);
-    //this.spotLightRobot.castShadow = true;
-    //this.spotLightRobot.shadow.mapSize.width=512;
-    //this.spotLightRobot.shadow.mapSize.height=512;
-    //this.spotLightRobot.penumbra = 0.4;
-    //this.spotLightRobot.intensity = 0.5;
     
     this.background = new THREE.Color(0x00000f);
     this.add(this.target);
@@ -142,7 +135,9 @@ class Game extends Physijs.Scene {
     var loader = new THREE.TextureLoader();
     var textura = loader.load ("imgs/wood.jpg");
     this.ground = new Ground (300, 300, new THREE.MeshPhongMaterial ({map: textura}), 4);
+    
     model.add (this.ground);
+    this.environment_loaded = true;
     return model;
   }
 
@@ -248,6 +243,10 @@ class Game extends Physijs.Scene {
     return returned;
   }
 
+  getLoadStatus() {
+      return (this.ground.environment.children.length == 1);
+  }
+
   getCamera (first_camera) { 
     if (first_camera)  
         return this.third_camera;
@@ -265,10 +264,27 @@ class Game extends Physijs.Scene {
   setCameraAspect (anAspectRatio) {
     this.third_camera.aspect = anAspectRatio;
     this.third_camera.updateProjectionMatrix();
+    this.robot.setCameraAspect(anAspectRatio);
   }
 
   getRobotLife() { return this.robot.getLife(); }
   
+  setDificulty(num) {
+      switch (num) {
+          case 1:
+            this.ovos_in_scene = 3;
+            this.ovos.velocity = 4;
+            break;
+          case 2:
+            this.ovos_in_scene = 4;
+            this.ovos.velocity = 5;
+            break;
+          case 3: 
+            this.ovos_in_scene = 5;
+            this.ovos.velocity = 6;
+            break;
+      }
+  }
 }
 
   // class variables
