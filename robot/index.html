@@ -29,6 +29,23 @@
             font-family: 'Gaegu', cursive;
         }
 
+        .button {
+            font-size: 16pt;
+            height: 30px;
+            width: 50%;
+            margin-left: 25%;
+            background-color:rgb(255, 221, 128);
+            cursor: pointer;
+            color: black;
+            box-shadow: black 1px 1px;
+            transition: 0.5s;
+            border-radius: 3px;
+        }
+
+        .button:hover {
+            background-color:rgb(255, 244, 214);
+        }
+
         #life_bar {
             position: absolute;
             left:100px; top: 10px;
@@ -40,18 +57,19 @@
             box-shadow: rgba(206, 206, 206, 0.5) 2px 2px;
             text-align: center;
             color: black;
-            font-family: Arial, Helvetica, sans-serif;
         }
 
         #progress {
             height: 20px;
             width: 100%;
-            background-color: rgb(49, 233, 49);
+            background-color: rgb(135, 238, 83);
+            background-color: rgb(217, 238, 83);
+            background-color: rgb(135, 238, 83);
         }
 
         #points {
             position: absolute;
-            left: 500px; top: 13px;
+            left: 500px; top: 10px;
             color: white;
             font-family: 'Gaegu', cursive;
             text-shadow: 1px 1px black;
@@ -68,8 +86,8 @@
         #menu {
             position: absolute;
             text-align: center;
-            height: 330px;
-            margin-top: 20%;
+            height: 350px;
+            margin-top: 200px;
             background-color: rgba(44, 44, 44, 0.741);
             border-radius: 5px;
             margin-left: 25%;
@@ -79,23 +97,25 @@
             color: white;
             box-shadow: black 1px 1px 5px;
             transition: display 0.5s;
-            
+        }
+
+        #lose_menu {
+            position: absolute;
+            text-align: center;
+            height: 200px;
+            margin-top: 200px;
+            background-color: rgba(44, 44, 44, 0.741);
+            border-radius: 5px;
+            margin-left: 25%;
+            width: 50%;
+            display: none;
+            color: white;
+            box-shadow: black 1px 1px 5px;
+            transition: display 0.5s;
         }
 
         #cerrar {
-            font-size: 16pt;
-            height: 30px;
-            width: 50%;
-            margin-left: 25%;
-            background-color:rgb(255, 221, 128);
-            cursor: pointer;
-            color: black;
-            box-shadow: black 1px 1px;
-            transition: 0.5s;
-        }
 
-        #cerrar:hover {
-            background-color:rgb(255, 244, 214);
         }
 
         #dificulty_div {
@@ -113,8 +133,8 @@
             color: white;
             text-align: center;
             padding-top: 20%;
+            font-size: 20pt;
         }
-
 
     </style>
 </head>
@@ -138,11 +158,16 @@
     <h1>Esto es un puto menú</h1>
     <div id="dificulty_div">Dificultad: BAJA</div>
     <img src="imgs/teclas.png" height=150 width=300>
-    <div id="cerrar">Cerrar</div>
+    <div class="button" id="cerrar">Cerrar</div>
+</div>
+
+<div id="lose_menu">
+    <h1>You died</h1>
+    <div style="font-size: 15pt" id="final_score">Your score: </div>
+    <div id="close_end_game" class="button">Try again</div>
 </div>
 
 <div id="loading"><h1>Loading...</h1></div>
-
 
 
 <!-- Div which will hold the Output -->

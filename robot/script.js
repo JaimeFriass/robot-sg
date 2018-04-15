@@ -70,7 +70,6 @@ function initStats() {
   stats.domElement.style.position = 'absolute';
   stats.domElement.style.left = '0px';
   stats.domElement.style.top = '0px';
-  
   $("#Stats-output").append( stats.domElement );
   
   return stats;
@@ -91,16 +90,18 @@ function setLife(life) {
   
   progress.innerHTML = Math.round(life) + ' %';
   progress.style.width = life + '%';
+  if (life > 55) {
+    progress.style.backgroundColor = "rgb(135, 238, 83)";
+  }
   if (life > 25 && life < 55) {
-    progress.style.backgroundColor = "rgb(205, 248, 49)";
+    progress.style.backgroundColor = "rgb(217, 238, 83)";
   }
   if (life < 25) {
-    progress.style.backgroundColor = "rgb(248, 122, 49)"
+    progress.style.backgroundColor = "rgb(248, 122, 49)";
   }
 
   if (life <= 0) {
-    alert("You died. Try again you loser >:D nigger");
-    location.reload(); 
+    finishGame();
   }
 }
 
@@ -118,7 +119,6 @@ function loading() {
 
 function stopLoading() {
   document.getElementById("loading").style.display = "none";
-  console.log("STOP LOADING");
 }
 
 /// It processes the clic-down of the mouse
@@ -191,7 +191,7 @@ function onWindowResize () {
 function onKeyDown(event) {
     event = event || window.event;
     var keycode = event.keyCode;
-    //console.log("onKeyDown " + keycode);
+    //.log("onKeyDown " + keycode);
     switch (keycode) {
         case 37: // LEFT ARROW
             keypressed = 37;
@@ -234,7 +234,7 @@ function onKeyDown(event) {
             break;
         default:
             keypressed = keycode;
-            //console.log("Tecla pulsada: " + keypressed);
+            //.log("Tecla pulsada: " + keypressed);
             break;
     }
 }
@@ -285,6 +285,25 @@ function updateTicks() {
   }
 }
 
+function finishGame() {
+  active_menu = true;
+  document.getElementById("lose_menu").style.display = "block";
+  document.getElementById("final_score").innerHTML = "Your score: " + scene.getPoints();
+}
+
+// When close button is pressed
+function closeButton() {
+  document.getElementById("menu").style.display = "none";
+  active_menu = false;
+}
+
+function closeFinalMenu() {
+  document.getElementById("lose_menu").style.display = "none";
+  active_menu = false;
+  ticks = 0;
+  scene = new Game (renderer.domElement);
+  environment_loaded = false;
+}
 ////////////////////////////////////////////////////////////////////
 //////////////////// RENDER ////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -296,7 +315,6 @@ function render() {
       environment_loaded = true; stopLoading();
     }
   }
-
   if (!active_menu) {
     stats.update();
 
@@ -322,7 +340,6 @@ function render() {
         finishGame();
 
     updateTicks();
-    scene.iterateOvos();
     scene.updateOvos();
   }
 
@@ -347,15 +364,8 @@ $(function () {
   window.addEventListener("keyup", onKeyUp, false);
   window.addEventListener ("mousewheel", onMouseWheel, true);   // For Chrome an others
   window.addEventListener ("DOMMouseScroll", onMouseWheel, true); // For Firefox
-  document.getElementById("cerrar").addEventListener("click", function(){
-      if (active_menu) {
-        document.getElementById("menu").style.display = "none";
-        active_menu = false;
-        console.log("PULSADO BOTON PARA CERRAR");
-      } else
-        document.getElementById("menu").style.display = "block";
-        active_menu = true;
-    });
+  document.getElementById("cerrar").addEventListener("click", closeButton);
+  document.getElementById("close_end_game").addEventListener("click", closeFinalMenu);
 
   first_camera = true;
   active_menu = false;

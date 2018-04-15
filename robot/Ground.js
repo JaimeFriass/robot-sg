@@ -63,13 +63,11 @@ class Ground extends THREE.Object3D {
 
   createHouses() {
       var houses = new THREE.Object3D();
-      console.log("ASDDAS");
       var mtlLoader = new THREE.MTLLoader();
       mtlLoader.setPath('models/');
       mtlLoader.load('environment.mtl', function (materials) {
     
           materials.preload();
-    
           var objLoader = new THREE.OBJLoader();
           objLoader.setMaterials(materials);
           objLoader.setPath('models/');
@@ -81,8 +79,6 @@ class Ground extends THREE.Object3D {
               object.scale.x = 4.7;
               object.scale.z = 4.7;
               object.rotation.x = -Math.PI / 2;
-              //object.rotation.z = -Math.PI / 2;
-              //object.position.y = 20;
               object.castShadow = true;
 
               houses.add(object);
@@ -92,8 +88,6 @@ class Ground extends THREE.Object3D {
       });
       return houses;
   }
-  
-  
   
   /// It returns the position of the mouse in normalized coordinates ([-1,1],[-1,1])
   /**

@@ -102,7 +102,7 @@ class Game extends Physijs.Scene {
     this.streetLight2 = new THREE.SpotLight( 0xfbd63f );
     this.streetLight2.position.set(238,85, 177);
     this.streetLight2.castShadow = true;
-    this.target = new THREE.Object3D(-335, 20, -285);
+    this.target = new THREE.Object3D( 238,20, 177);
     this.streetLight2.target = this.target;
     this.streetLight2.target.position.set(238, 20, 177);
     this.streetLight2.penumbra = 0.4;
