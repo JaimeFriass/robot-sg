@@ -35,22 +35,22 @@ environment_loaded = null;
 /**
  * @param withStats - A boolean to show the statictics or not
  */
-function createGUI (withStats) {
-  GUIcontrols = new function() {
+function createGUI(withStats) {
+  GUIcontrols = new function () {
     this.axis = true;
     this.lightIntensity = 0.5;
     this.velocity = 1;
     this.ovos_in_scene = 4;
   }
-  
+
   var gui = new dat.GUI();
-  var axisLights = gui.addFolder ('Controles');
-    axisLights.add(GUIcontrols, 'axis').name('Axis on/off :');
-    axisLights.add(GUIcontrols, 'lightIntensity', 0, 1.0).name('Light intensity :');
-  var robot = gui.addFolder ('Robot');
-    robot.add(GUIcontrols, 'velocity', 0, 10, 1.0).name('Velocity :');
-  var ovos = gui.addFolder ('Ovos');
-    ovos.add(GUIcontrols, 'ovos_in_scene', 0, 20, 1.0).name('Number: ');
+  var axisLights = gui.addFolder('Controles');
+  axisLights.add(GUIcontrols, 'axis').name('Axis on/off :');
+  axisLights.add(GUIcontrols, 'lightIntensity', 0, 1.0).name('Light intensity :');
+  var robot = gui.addFolder('Robot');
+  robot.add(GUIcontrols, 'velocity', 0, 10, 1.0).name('Velocity :');
+  var ovos = gui.addFolder('Ovos');
+  ovos.add(GUIcontrols, 'ovos_in_scene', 0, 20, 1.0).name('Number: ');
 
   if (withStats)
     stats = initStats();
@@ -61,17 +61,14 @@ function createGUI (withStats) {
  * @return The statistics object
  */
 function initStats() {
-  
+
   var stats = new Stats();
-  
   stats.setMode(0); // 0: fps, 1: ms
-  
   // Align top-left
   stats.domElement.style.position = 'absolute';
   stats.domElement.style.left = '0px';
   stats.domElement.style.top = '0px';
-  $("#Stats-output").append( stats.domElement );
-  
+  $("#Stats-output").append(stats.domElement);
   return stats;
 }
 
@@ -79,15 +76,14 @@ function initStats() {
 /**
  * @param str - The message
  */
-function setMessage (str) {
-  document.getElementById ("Messages").innerHTML = "<h2>"+str+"</h2>";
+function setMessage(str) {
+  document.getElementById("Messages").innerHTML = "<h2>" + str + "</h2>";
 }
 
 // LIFE
 function setLife(life) {
   //document.getElementById ("Life").innerHTML = "<h3>"+life+"</h3>";
   var progress = document.getElementById("progress");
-  
   progress.innerHTML = Math.round(life) + ' %';
   progress.style.width = life + '%';
   if (life > 55) {
@@ -125,7 +121,7 @@ function stopLoading() {
 /**
  * @param event - Mouse information
  */
-function onMouseDown (event) {
+function onMouseDown(event) {
   if (event.ctrlKey) {
     // The Trackballcontrol only works if Ctrl key is pressed
     scene.getCameraControls().enabled = true;
@@ -137,110 +133,74 @@ function onMouseDown (event) {
 /**
  * @param event - Mouse information
  */
-function onMouseMove (event) {
+function onMouseMove(event) {
 
-}
-/// It processes the clic-up of the mouse
-/**
- * @param event - Mouse information
- */
-function onMouseUp (event) {
-  if (mouseDown) {
-    switch (applicationMode) {
-      case Game.ADDING_BOXES :
-        scene.addBox (event, Game.END_ACTION);
-        break;
-      case Game.MOVING_BOXES :
-        scene.moveBox (event, Game.END_ACTION);
-        break;
-      default :
-        applicationMode = Game.NO_ACTION;
-        break;
-    }
-    mouseDown = false;
-  }
 }
 
 /// It processes the wheel rolling of the mouse
 /**
  * @param event - Mouse information
  */
-function onMouseWheel (event) {
+function onMouseWheel(event) {
   if (event.ctrlKey) {
     // The Trackballcontrol only works if Ctrl key is pressed
     scene.getCameraControls().enabled = true;
-  } else {  
+  } else {
     scene.getCameraControls().enabled = false;
-    if (mouseDown) {
-      switch (applicationMode) {
-        case Game.MOVING_BOXES :
-          scene.moveBox (event, Game.ROTATE_BOX);
-          break;
-      }
-    }
   }
 }
 
 /// It processes the window size changes
-function onWindowResize () {
-  scene.setCameraAspect (window.innerWidth / window.innerHeight);
-  renderer.setSize (window.innerWidth, window.innerHeight);
+function onWindowResize() {
+  scene.setCameraAspect(window.innerWidth / window.innerHeight);
+  renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-
 function onKeyDown(event) {
-    event = event || window.event;
-    var keycode = event.keyCode;
-    //.log("onKeyDown " + keycode);
-    switch (keycode) {
-        case 37: // LEFT ARROW
-            keypressed = 37;
-            break;
-        case 38: // UP ARROW
-            keypressed = 38;
-            break;
-        case 39: // RIGHT ARROW
-            keypressed = 39;
-            break;
-        case 40: // DOWN ARROW
-            keypressed = 40;
-            break;
-        case 87: // W
-            keypressed = 87;
-            break;
-        case 83: // S
-            keypressed = 83;
-            break;
-        case 67: // C
-            if (first_camera)
-              first_camera = false;
-            else
-              first_camera = true;
-        case 88: // Z
-            keypressed = 90;
-            break;
-        case 90: // X
-            keypressed = 88;
-            break;
+  event = event || window.event;
+  var keycode = event.keyCode;
+  //.log("onKeyDown " + keycode);
+  switch (keycode) {
+    case 37: // LEFT ARROW
+      keypressed = 37; break;
+    case 38: // UP ARROW
+      keypressed = 38; break;
+    case 39: // RIGHT ARROW
+      keypressed = 39; break;
+    case 40: // DOWN ARROW
+      keypressed = 40; break;
+    case 87: // W
+      keypressed = 87; break;
+    case 83: // S
+      keypressed = 83; break;
+    case 86: // V
+      if (first_camera)
+        first_camera = false;
+      else
+        first_camera = true;
+    case 88: // Z
+      keypressed = 90; break;
+    case 90: // X
+      keypressed = 88; break;
 
-        case 32: // SPACE BAR
-            if (!active_menu) {
-              active_menu = true;
-              document.getElementById("menu").style.display = "block";
-            } else if (active_menu) {
-              active_menu = false;
-              document.getElementById("menu").style.display = "none";
-            }
-            break;
-        default:
-            keypressed = keycode;
-            //.log("Tecla pulsada: " + keypressed);
-            break;
-    }
+    case 32: // SPACE BAR
+      if (!active_menu) {
+        active_menu = true;
+        document.getElementById("menu").style.display = "block";
+      } else if (active_menu) {
+        active_menu = false;
+        document.getElementById("menu").style.display = "none";
+      }
+      break;
+    default:
+      keypressed = keycode;
+      //console.log("Tecla pulsada: " + keypressed);
+      break;
+  }
 }
 
 function onKeyUp(event) {
-    keypressed = null;
+  keypressed = null;
 }
 
 function draw_collitions(value) {
@@ -255,7 +215,7 @@ function draw_collitions(value) {
 /**
  * @return The renderer
  */
-function createRenderer () {
+function createRenderer() {
   var renderer = new THREE.WebGLRenderer();
   renderer.setClearColor(new THREE.Color(0xEEEEEE), 1.0);
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -267,20 +227,22 @@ function updateTicks() {
   ticks++;
   document.getElementById("ticks").innerHTML = ticks;
   if (ticks < 1000) {
-    // DIFICULTAD FACIL
-    document.getElementById("dificulty_div").style.color = "white";
+    // EASY
+    document.getElementById("points").style.color = "green";
+    document.getElementById("dificulty_div").style.color = "green";
+    document.getElementById("dificulty_div").innerHTML = "Difficulty: EASY";
 
   } else if (ticks < 5000) {
-    // DIFICULTAD MEDIA
+    // MEDIUM
     document.getElementById("points").style.color = "orange";
     document.getElementById("dificulty_div").style.color = "orange";
-    document.getElementById("dificulty_div").innerHTML = "Dificultad: MEDIA";
+    document.getElementById("dificulty_div").innerHTML = "Difficulty: MEDIUM";
     scene.setDificulty(2);
-  } else  {
-    // DIFICULTAD DIFICIL
+  } else {
+    // HARD
     document.getElementById("points").style.color = "red";
     document.getElementById("dificulty_div").style.color = "red";
-    document.getElementById("dificulty_div").innerHTML = "Dificultad: ALTA";
+    document.getElementById("dificulty_div").innerHTML = "Difficulty: HARD";
     scene.setDificulty(3);
   }
 }
@@ -301,7 +263,7 @@ function closeFinalMenu() {
   document.getElementById("lose_menu").style.display = "none";
   active_menu = false;
   ticks = 0;
-  scene = new Game (renderer.domElement);
+  scene = new Game(renderer.domElement);
   environment_loaded = false;
 }
 ////////////////////////////////////////////////////////////////////
@@ -317,13 +279,7 @@ function render() {
   }
   if (!active_menu) {
     stats.update();
-
-    if (false) {
-      scene.getCameraControls(true).update ();
-    } else {
-      scene.getCameraControls(false).update ();
-    }
-
+    scene.getCameraControls().update();
     scene.animate(GUIcontrols);
     setLife(scene.getRobotLife());
     setPoints(scene.getPoints());
@@ -335,14 +291,13 @@ function render() {
     }
 
     posicion = scene.getPos();
-    if (posicion.x == 1000 || posicion.x == -1000 || 
-        posicion.z == 1000 || posicion.z == -1000)
-        finishGame();
+    if (posicion.x > 460 || posicion.x < -455 ||
+      posicion.z > 300 || posicion.z < -460)
+      finishGame();
 
     updateTicks();
     scene.updateOvos();
   }
-
   requestAnimationFrame(render);
   renderer.render(scene, scene.getCamera(first_camera));
 }
@@ -355,15 +310,14 @@ $(function () {
   $("#WebGL-output").append(renderer.domElement);
 
   // listeners
-  window.addEventListener ("resize", onWindowResize);
-  window.addEventListener ("mousemove", onMouseMove, true);
-  window.addEventListener ("mousedown", onMouseDown, true);
-  window.addEventListener("mouseup", onMouseUp, true);
+  window.addEventListener("resize", onWindowResize);
+  //window.addEventListener("mousemove", onMouseMove, true);
+  window.addEventListener("mousedown", onMouseDown, true);
 
   window.addEventListener("keydown", onKeyDown, false);
   window.addEventListener("keyup", onKeyUp, false);
-  window.addEventListener ("mousewheel", onMouseWheel, true);   // For Chrome an others
-  window.addEventListener ("DOMMouseScroll", onMouseWheel, true); // For Firefox
+  window.addEventListener("mousewheel", onMouseWheel, true);   // For Chrome an others
+  window.addEventListener("DOMMouseScroll", onMouseWheel, true); // For Firefox
   document.getElementById("cerrar").addEventListener("click", closeButton);
   document.getElementById("close_end_game").addEventListener("click", closeFinalMenu);
 
@@ -371,7 +325,7 @@ $(function () {
   active_menu = false;
   environment_loaded = false;
   // create a scene, that will hold all our elements such as objects, cameras and lights.
-  scene = new Game (renderer.domElement);
+  scene = new Game(renderer.domElement);
 
   createGUI(true);
 

@@ -1,13 +1,7 @@
 
 /// The Robot class
 /**
- * @author JaimeFrais
- * 
- * @param parameters = {
- *      robotHeight: <float>,
- *      robotWidth : <float>,
- *      material: <Material>
- * }
+ * @author JaimeFrias
  */
 
 class Robot extends THREE.Object3D {
@@ -58,18 +52,14 @@ class Robot extends THREE.Object3D {
     this.points = 0;
 
     // Velocity of the robot
-    this.velocity = 1;
+    this.velocity = 1.5;
 
     // TEXTURAS
     this.tex_metal_blanco = new THREE.TextureLoader().load( "imgs/traje.jpg" );
   
     this.robot = this.createRobot();
     this.robot.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(10, 100, 0));
-    // A way of feedback, a red jail will be visible around the robot when a box is taken by it
-    
-    //this.feedBack = new THREE.BoxHelper (this.robot, 0xFF0000);
-    //this.feedBack.visible = false;
-    //this.add (this.feedBack);
+
     this.add (this.robot);
   }
   
@@ -319,7 +309,6 @@ class Robot extends THREE.Object3D {
   getLife() { return this.life; }
   getCamera() { return this.eye_camera;}
   getCameraControls () { return this.trackballControls; }
-  //disableCamera() {this.eye_camera.enabled = false;}
 
   setCameraAspect (anAspectRatio) {
     this.eye_camera.aspect = anAspectRatio;
@@ -328,7 +317,7 @@ class Robot extends THREE.Object3D {
 
 
   // ****************************************************************//
-  //                CONTROLES DESDE TECLADO                          //
+  //                KEYBOARD CONTROLS                                //
   // ****************************************************************//
   rotHeadLeft() {
     // 80º limit

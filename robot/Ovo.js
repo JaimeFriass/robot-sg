@@ -12,7 +12,7 @@ class Ovo extends THREE.Object3D {
         //this.ovo2 = this.createOvoMod();
 
         this.add(this.ovo);
-        
+
     }
 
     createOvo() {
@@ -22,14 +22,14 @@ class Ovo extends THREE.Object3D {
         var ovo = new THREE.Mesh();
         //console.log("OVO: Creating ovo - x: "+random_pos_x);
 
-        
+
         if (random_class > 2) {
             this.class = "OvoMa";
             var texture = new THREE.TextureLoader().load("imgs/2.png");
         } else {
             this.class = "OvoBu";
-            var texture = new THREE.TextureLoader().load("imgs/3.png");
-        }  
+            var texture = new THREE.TextureLoader().load("imgs/1.png");
+        }
 
         this.mesh_ovo = new THREE.Mesh(
             new THREE.DodecahedronBufferGeometry(15, 1),
@@ -40,7 +40,7 @@ class Ovo extends THREE.Object3D {
         ovo.position.set(-400 + random_pos_x, 30, -250 + random_pos_z);
         //ovo.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(-400 + random_pos_x, 60, -300 + random_pos_z));
         return ovo;
-        
+
     }
 
     getPos() {
@@ -60,14 +60,14 @@ class Ovo extends THREE.Object3D {
         mtlLoader.setTexturePath('models/');
         mtlLoader.setPath('models/');
         mtlLoader.load('avion.mtl', function (materials) {
-      
+
             materials.preload();
-      
+
             var objLoader = new THREE.OBJLoader();
             objLoader.setMaterials(materials);
             objLoader.setPath('models/');
             objLoader.load('avion.obj', function (object) {
-      
+
                 //scene.add(object);
                 object.position.z = ovo_pos;
                 object.position.y = 30;
@@ -78,13 +78,13 @@ class Ovo extends THREE.Object3D {
                 object.rotation.z = -Math.PI / 2;
                 //object.position.y = 20;
                 object.castShadow = true;
-                
+
                 avion.add(object);
-      
+
             });
-      
+
         });
-        avion.add(new THREE.BoxHelper (avion, 0xFF0000));
+        avion.add(new THREE.BoxHelper(avion, 0xFF0000));
         return avion;
     }
 
@@ -92,10 +92,10 @@ class Ovo extends THREE.Object3D {
         if (this.ovo.position.x < 750)
             this.ovo.position.x = this.ovo.position.x + this.velocity;
 
-        this.ovo.rotation.y = (this.ovo.rotation.y + 0.09) % 4;
+        this.ovo.rotation.y = (this.ovo.rotation.y + 0.09) % (Math.PI*2);
     }
 
-    removeOvo(){
+    removeOvo() {
         this.remove(this.ovo);
     }
 
