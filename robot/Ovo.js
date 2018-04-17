@@ -19,9 +19,8 @@ class Ovo extends THREE.Object3D {
         var random_pos_z = Math.floor((Math.random() * 500) + 1);
         var random_pos_x = Math.floor((Math.random() * 200) + 1);
         var random_class = Math.floor((Math.random() * 10) + 1);
+        var random_shape = Math.floor((Math.random() * 10) + 1);
         var ovo = new THREE.Mesh();
-        //console.log("OVO: Creating ovo - x: "+random_pos_x);
-
 
         if (random_class > 2) {
             this.class = "OvoMa";
@@ -31,14 +30,19 @@ class Ovo extends THREE.Object3D {
             var texture = new THREE.TextureLoader().load("imgs/1.png");
         }
 
-        this.mesh_ovo = new THREE.Mesh(
-            new THREE.DodecahedronBufferGeometry(15, 1),
-            new THREE.MeshPhongMaterial({ map: texture }));
+        if (random_class > 2) {
+            this.mesh_ovo = new THREE.Mesh(
+                new THREE.SphereGeometry(15, 25, 25),
+                new THREE.MeshPhongMaterial({ map: texture }));
+        } else {
+            this.mesh_ovo = new THREE.Mesh(
+                new THREE.DodecahedronGeometry(15, 0),
+                new THREE.MeshPhongMaterial({ map: texture }));
+        }
         this.mesh_ovo.receiveShadow = true;
         this.mesh_ovo.castShadow = true;
         ovo.add(this.mesh_ovo);
         ovo.position.set(-400 + random_pos_x, 30, -250 + random_pos_z);
-        //ovo.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(-400 + random_pos_x, 60, -300 + random_pos_z));
         return ovo;
 
     }
@@ -102,4 +106,6 @@ class Ovo extends THREE.Object3D {
     getClass() {
         return this.class;
     }
+
+    setVelocity(vel) { this.velocity = vel; }
 }

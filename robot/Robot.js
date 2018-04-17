@@ -15,16 +15,7 @@ class Robot extends THREE.Object3D {
     var texturaa = new THREE.TextureLoader().load( "imgs/1.png" );
     this.material    = (parameters.material === undefined ? new THREE.MeshPhongMaterial ({map: texturaa}) : parameters.material);
     
-    this.mat = Physijs.createMaterial(
-      new THREE.MeshBasicMaterial({color: 0xff8888}),
-      0.8,
-      0.3
-    );
-    // With these variables, the posititon of the hook is set
-    this.rotHead = 0;
-    this.rotBody = 0;
-
-      // Ubication
+    // Initial Ubication
     this.pos_x = 0;
     this.pos_z = 0;
     this.robot_rotation = 0;
@@ -51,10 +42,10 @@ class Robot extends THREE.Object3D {
     // Points
     this.points = 0;
 
-    // Velocity of the robot
+    // Robot Velocity
     this.velocity = 1.5;
 
-    // TEXTURAS
+    // TEXTURES
     this.tex_metal_blanco = new THREE.TextureLoader().load( "imgs/traje.jpg" );
   
     this.robot = this.createRobot();
@@ -97,13 +88,6 @@ class Robot extends THREE.Object3D {
     robot.add(this.right_leg);
     robot.add(left_foot);
     robot.add(right_foot);
-
-    robot.rotation.y = this.robot_rotation;
-
-    // Let position & rotation to be updated
-    robot.__dirtyPosition = true;
-    robot.__dirtyRotation = true;
-
     robot.position.y = 4;
     robot.updateMatrix();
     return robot;
@@ -111,16 +95,10 @@ class Robot extends THREE.Object3D {
 
   createFoot() {
     var texture = new THREE.TextureLoader().load( "imgs/black_metal.jpg" );
-    var mat = Physijs.createMaterial(
-      new THREE.MeshPhongMaterial ({map: texture}),
-      0.8,
-      0.4
-    )
-    var foot = new Physijs.CylinderMesh (
+    var foot = new THREE.Mesh (
       new THREE.CylinderGeometry( 2, 4, 2, 31 ),
-      mat,
-      1 // mass
-    );
+      new THREE.MeshPhongMaterial ({map: texture})
+    )
     foot.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 0, this.pos_z));
     foot.castShadow = true;
     return foot;
@@ -128,16 +106,10 @@ class Robot extends THREE.Object3D {
 
   createLeg () {
     var texture = new THREE.TextureLoader().load( "imgs/white_metal.jpg" );
-    var mat = Physijs.createMaterial(
-      new THREE.MeshPhongMaterial ({map: texture}),
-      0.8,
-      0.4
-    )
-    var hoof = new Physijs.CylinderMesh (
+    var hoof = new THREE.Mesh (
       new THREE.CylinderGeometry( 2, 2, 30, 31 ),
-      mat,
-      1 // mass
-    );
+      new THREE.MeshPhongMaterial ({map: texture})
+    )
     hoof.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 15, this.pos_z));
     hoof.castShadow = true;
 
@@ -145,61 +117,36 @@ class Robot extends THREE.Object3D {
   }
 
   createHead() {
-    var textura_cara = new THREE.TextureLoader().load( "imgs/fotito2.jpg" );
     var texture = new THREE.TextureLoader().load( "imgs/white_metal.jpg" );
-    var mat = Physijs.createMaterial(
-      new THREE.MeshPhongMaterial ({map: texture}),
-      0.8,
-      0.4
-    )
-    var skull = new Physijs.SphereMesh (
+    var skull = new THREE.Mesh ( 
       new THREE.SphereGeometry( 11, 32, 32),
-      mat,
-      5
-    );
+      new THREE.MeshPhongMaterial ({map: texture})
+    )
     skull.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 0, this.pos_z));
     skull.castShadow = true;
 
-    var textura_ojo = new THREE.TextureLoader().load( "imgs/white_metal.jpg" );
-    var mat = Physijs.createMaterial(
-      new THREE.MeshPhongMaterial ({map: textura_ojo}),
-      0.8,
-      0.4
-    )
-    var eye = new Physijs.CylinderMesh (
+    var eye_texture = new THREE.TextureLoader().load( "imgs/white_metal.jpg" );
+    var eye = new THREE.Mesh(
       new THREE.CylinderGeometry( 2, 2, 8, 30 ),
-      mat,
-      2
-    );
+      new THREE.MeshPhongMaterial ({map: eye_texture})
+    )
     eye.geometry.applyMatrix (new THREE.Matrix4().makeRotationX (Math.PI / 2));
     eye.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 38, this.pos_z + 9));
     eye.castShadow = true;
-
-
-
-    this.viewpoint = new Physijs.SphereMesh(new THREE.SphereGeometry(0.5, 50, 50), 0);
+    // EYE CAMERA
+    this.viewpoint = new THREE.Mesh(new THREE.SphereGeometry(0.5, 50, 50), 0)
     this.viewpoint.position.set(0, -4, 50);
     this.eye_camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-
     this.eye_camera.lookAt(this.viewpoint.position);
-    
     this.eye_camera.position.set(0, 40, 9);
 
-    
+    // EYE SPOTLIGHT
     this.spotLightHead = new THREE.SpotLight( 0xffffff);
     this.spotLightHead.position.set(0,43, 15);
-  
     this.spotLightHead.castShadow = true;
     this.spotLightHead.target = this.viewpoint;
     this.spotLightHead.penumbra = 0.4;
     this.spotLightHead.intensity = 0.5;
-    /*
-    this.spotLightHead.shadow.mapSize.width=512;
-    this.spotLightHead.shadow.mapSize.height=512;
-    
-    this.spotLightHead.intensity = 0.5;
-    this.spotLightHead.target = this.viewpoint.position;
-    */
 
     skull.add(this.spotLightHead);
     skull.add(this.eye_camera);
@@ -213,16 +160,10 @@ class Robot extends THREE.Object3D {
 
   createBody() {
     // CHEST
-    var mat = Physijs.createMaterial(
-      new THREE.MeshPhongMaterial ({map: this.tex_metal_blanco}),
-      0.8,
-      0.4
-    )
-    var chest = new Physijs.CylinderMesh (
+    var chest = new THREE.Mesh (
       new THREE.CylinderGeometry( 11, 11, 28, 32 ),
-      mat,
-      10
-    );
+      new THREE.MeshPhongMaterial ({map: this.tex_metal_blanco})
+    )
 
     chest.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (this.pos_x, 20, this.pos_z));
     chest.castShadow = true;
@@ -230,13 +171,10 @@ class Robot extends THREE.Object3D {
     // SHOULDERS
     var shoulder_left = this.createShoulder();
     var shoulder_right = this.createShoulder();
-
     shoulder_left.geometry.applyMatrix (new THREE.Matrix4().makeRotationZ(Math.PI / 2));
     shoulder_left.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (13, 28, 0));
     shoulder_right.geometry.applyMatrix (new THREE.Matrix4().makeRotationZ(Math.PI / 2));
     shoulder_right.geometry.applyMatrix (new THREE.Matrix4().makeTranslation (-13, 28, 0));
-    //shoulder_left.applyMatrix( new THREE.Matrix4().makeTranslation(-15, -28, 0) );
-    //shoulder_left.rotation.z = Math.PI / 2;
 
     // HEAD
     this.head = this.createHead();
@@ -250,17 +188,10 @@ class Robot extends THREE.Object3D {
 
   createShoulder() {
     var texture = new THREE.TextureLoader().load( "imgs/black_metal.jpg" );
-    var mat = Physijs.createMaterial(
-      new THREE.MeshPhongMaterial ({map: texture}),
-      0.8,
-      0.4
-    )
-    var shoulder = new Physijs.CylinderMesh (
+    var shoulder = new THREE.Mesh (
       new THREE.CylinderGeometry( 3, 3, 8, 32 ),
-      mat,
-      2
-    );
-                                    
+      new THREE.MeshPhongMaterial ({map: texture})
+    )                        
     shoulder.castShadow = true;
     return shoulder;
   }
@@ -270,28 +201,19 @@ class Robot extends THREE.Object3D {
     var vectorBetweenOvo = new THREE.Vector2();
     vectorBetweenOvo.subVectors(new THREE.Vector2 (ovo.getPos().x, ovo.getPos().z),
                                 new THREE.Vector2 (this.getPos().x, this.getPos().z));
-    //console.log(vectorBetweenOvo.length() < 50);
     ha_dado = vectorBetweenOvo.length() < 27;
     return (ha_dado);
   }
 
-  setRotHead(angulo) {
-      this.rotHead = angulo;
-      this.head.rotation.y = this.rotHead;
-      if (this.feedBack.visible) {
-          this.feedBack.update();
-      }
+  //                          GETTERS / SETTERS
+  // ****************************************************************//
+  setRotHead(g) {
+      this.head.rotation.y = g;
   }
 
-  setRotBody(angulo) {
-    this.rotBody = angulo;
-    this.body.rotation.x = this.rotBody;
-    if (this.feedBack.visible) {
-      this.feedBack.update();
-    }
-    
+  setRotBody(g) {
+    this.body.rotation.x = g;
   }
-
   getPos() {
     var prueba = new THREE.Vector3();
     prueba.setFromMatrixPosition(this.robot.matrixWorld);
@@ -309,6 +231,7 @@ class Robot extends THREE.Object3D {
   getLife() { return this.life; }
   getCamera() { return this.eye_camera;}
   getCameraControls () { return this.trackballControls; }
+  setVelocity(vel) { this.velocity = vel; }
 
   setCameraAspect (anAspectRatio) {
     this.eye_camera.aspect = anAspectRatio;

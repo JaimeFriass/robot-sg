@@ -39,8 +39,8 @@ function createGUI(withStats) {
   GUIcontrols = new function () {
     this.axis = true;
     this.lightIntensity = 0.5;
-    this.velocity = 1;
-    this.ovos_in_scene = 4;
+    this.velocity = 2;
+    //this.ovos_in_scene = 4;
   }
 
   var gui = new dat.GUI();
@@ -49,8 +49,8 @@ function createGUI(withStats) {
   axisLights.add(GUIcontrols, 'lightIntensity', 0, 1.0).name('Light intensity :');
   var robot = gui.addFolder('Robot');
   robot.add(GUIcontrols, 'velocity', 0, 10, 1.0).name('Velocity :');
-  var ovos = gui.addFolder('Ovos');
-  ovos.add(GUIcontrols, 'ovos_in_scene', 0, 20, 1.0).name('Number: ');
+  //var ovos = gui.addFolder('Ovos');
+  //vos.add(GUIcontrols, 'ovos_in_scene', 0, 20, 1.0).name('Number: ');
 
   if (withStats)
     stats = initStats();
@@ -226,13 +226,14 @@ function createRenderer() {
 function updateTicks() {
   ticks++;
   document.getElementById("ticks").innerHTML = ticks;
-  if (ticks < 1000) {
+  if (ticks < 1000 && scene.getPoints() < 100) {
     // EASY
     document.getElementById("points").style.color = "green";
     document.getElementById("dificulty_div").style.color = "green";
     document.getElementById("dificulty_div").innerHTML = "Difficulty: EASY";
+    scene.setDificulty(1);
 
-  } else if (ticks < 5000) {
+  } else if (ticks < 7000 && scene.getPoints() < 500) {
     // MEDIUM
     document.getElementById("points").style.color = "orange";
     document.getElementById("dificulty_div").style.color = "orange";
